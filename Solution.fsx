@@ -3,12 +3,12 @@
 open System
 open Fake
 
-let build solution _ =
-    [solution]
-        |> MSBuildRelease "" "Build"
+let build config _ =
+    [config |> Map.find "solution"]
+        |> MSBuild "" "Build" ["Configuration", (config |> Map.find "configuration")]
         |> ignore
 
-let clean solution _ =
-    [solution]
-        |> MSBuildRelease "" "Clean" 
+let clean config _ =
+    [config |> Map.find "solution"]
+        |> MSBuild "" "Clean" ["Configuration", (config |> Map.find "configuration")]
         |> ignore
