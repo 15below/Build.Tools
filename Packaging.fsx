@@ -5,8 +5,6 @@ open System.IO
 open Fake
 
 let private nuget = "./nuget/nuget.exe"
-let private configs = "./**/packages.config"
-let private projects = "./**/*.*proj"
 
 let private filterPackageable proj =
     Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
@@ -20,12 +18,12 @@ let private packageProject config proj =
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
             proj
-            (config |> Map.find "output")
-            (config |> Map.find "configuration")
+            (config |> Map.find "packaging:output")
+            (config |> Map.find "build:configuration")
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- (config |> Map.find "tools") @@ nuget
+            info.FileName <- (config |> Map.find "core:tools") @@ nuget
             info.WorkingDirectory <- DirectoryName proj
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
     
@@ -33,13 +31,13 @@ let private packageProject config proj =
 
 let private restorePackages config file =
     RestorePackage (fun x ->
-        { x with ToolPath = (config |> Map.find "tools") @@ nuget }) file
+        { x with ToolPath = (config |> Map.find "core:tools") @@ nuget }) file
 
 let restore config _ =
-    !! configs
+    !! "./**/packages.config"
         |> Seq.iter (restorePackages config)
 
 let package config _ =
-    !! projects
+    !! "./**/*.*proj"
         |> Seq.choose filterPackageable
         |> Seq.iter (packageProject config)
