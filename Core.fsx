@@ -24,11 +24,11 @@ Target "Solution:Build"    <| Solution.build config
 Target "Solution:Clean"    <| Solution.clean config
 Target "Versioning:Update" <| Versioning.update config
 
-//"Solution:Clean"
-    //==> "Packaging:Restore"
-"Versioning:Update"
-    //==> "Solution:Build"
-    //==> "Packaging:Package"
+"Solution:Clean"
+    ==> "Packaging:Restore"
+    ==> "Versioning:Update"
+    ==> "Solution:Build"
+    ==> "Packaging:Package"
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"
