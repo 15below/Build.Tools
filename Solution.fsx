@@ -1,14 +1,15 @@
 #r "./fake/fakelib.dll"
+#load "./Utils.fsx"
 
 open System
 open Fake
 
-let build config _ =
-    [config |> Map.find "build:solution"]
-        |> MSBuild "" "Build" ["Configuration", (config |> Map.find "build:configuration")]
+let build (config: Map<string, string>) _ =
+    [config.get "build:solution"]
+        |> MSBuild "" "Build" ["Configuration", config.get "build:configuration"]
         |> ignore
 
-let clean config _ =
-    [config |> Map.find "build:solution"]
-        |> MSBuild "" "Clean" ["Configuration", (config |> Map.find "build:configuration")]
+let clean (config: Map<string, string>) _ =
+    [config.get "build:solution"]
+        |> MSBuild "" "Clean" ["Configuration", config.get "build:configuration"]
         |> ignore
