@@ -80,6 +80,6 @@ let package config _ =
         |> Seq.choose filterPackageable
         |> Seq.iter (packageProject config)
 
-let push config _ =
-    !! "./**/*.nupkg"
+let push (config : Map<string, string>) _ =
+    !! (config.get "packaging:output" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config)
