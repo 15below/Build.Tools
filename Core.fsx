@@ -12,6 +12,9 @@ let config =
         "build:solution",      environVar          "solution"
         "core:tools",          environVar          "tools"
         "packaging:output",    environVarOrDefault "output"                "C:/Packages"
+        "packaging:updateid",  environVarOrDefault "updateid"              ""
+        "packaging:pushurl",   environVarOrDefault "pushurl"               ""
+        "packaging:apikey",    environVarOrDefault "apikey"                ""
         "versioning:build",    environVarOrDefault "build_number"          "0"
         "versioning:branch",   match environVar "teamcity_build_branch" with
                                    | "<default>" -> environVar "vcsroot_branch"
@@ -21,6 +24,8 @@ let config =
 Target "Default"           <| DoNothing
 Target "Packaging:Package" <| Packaging.package config
 Target "Packaging:Restore" <| Packaging.restore config
+Target "Packaging:Update"  <| Packaging.update config
+Target "Packaging:Push"    <| Packaging.push config
 Target "Solution:Build"    <| Solution.build config
 Target "Solution:Clean"    <| Solution.clean config
 Target "Versioning:Update" <| Versioning.update config
@@ -30,6 +35,7 @@ Target "Versioning:Update" <| Versioning.update config
     ==> "Versioning:Update"
     ==> "Solution:Build"
     ==> "Packaging:Package"
+    =?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"
