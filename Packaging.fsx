@@ -31,8 +31,13 @@ let private packageProject (config: Map<string, string>) proj =
     if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
 
 let private restorePackages (config: Map<string, string>) file =
-    RestorePackage (fun x ->
-        { x with ToolPath = config.get "core:tools" @@ nuget }) file
+    let timeOut = TimeSpan.FromMinutes 5.
+    let args = sprintf @"install ""%s""" file
+    let result = ExecProcess (fun info ->
+                        info.FileName <- config.get "core:tools" @@ nuget
+                        info.WorkingDirectory <- currentDirectory
+                        info.Arguments <- args) timeOut
+    if result <> 0 then failwithf "Error during Nuget update. %s %s" (config.get "core:tools" @@ nuget) args
 
 let private updatePackages (config: Map<string, string>) file =
     let specificId = config.get "packaging:updateid"
@@ -61,7 +66,7 @@ let private pushPackages (config: Map<string, string>) nupkg =
             pushurl
     let result =
         ExecProcess (fun info ->
-            info.FileName <- config.get "core.tools" @@ nuget
+            info.FileName <- config.get "core:tools" @@ nuget
             info.WorkingDirectory <- DirectoryName nupkg
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
