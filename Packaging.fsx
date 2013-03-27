@@ -16,7 +16,6 @@ let private filterPackageable proj =
                 | _ -> None)
 
 let private packageProject (config: Map<string, string>) proj =
-    CleanDir (config.get "packaging:output")
 
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
@@ -82,7 +81,9 @@ let update config _ =
     !! "./**/packages.config"
         |> Seq.iter (updatePackages config)
 
-let package config _ =
+let package (config : Map<string, string>) _ =
+    CleanDir (config.get "packaging:output")
+
     !! "./**/*.*proj"
         |> Seq.choose filterPackageable
         |> Seq.iter (packageProject config)
