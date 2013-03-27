@@ -8,7 +8,7 @@ open Fake.Git
 
 let private readAssemblyVersion file =
     ReadFile file
-        |> Seq.find (fun line -> line.Contains "AssemblyVersion")
+        |> Seq.find (fun line -> not line.StartsWith("//") && line.Contains "AssemblyVersion")
         |> (fun line -> Regex.Match(line, @"(?<=\().+?(?=\))").Value)
         |> (fun version -> Version (version.Trim [|'"'|]))
 
