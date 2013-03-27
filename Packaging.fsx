@@ -7,9 +7,6 @@ open Fake
 
 let private nuget = "./nuget/nuget.exe"
 
-let private createFolder root folder = 
-    Directory.CreateDirectory(sprintf "%s\%s" root folder) |> ignore
-
 let private filterPackageable proj =
     Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
         |> (fun spec -> FileInfo spec)
@@ -19,9 +16,10 @@ let private filterPackageable proj =
                 | _ -> None)
 
 let private packageProject (config: Map<string, string>) proj =
-    createFolder  
-            (DirectoryName proj) 
-            (config.get "packaging:output")
+    CleanDir (sprintf "%s\%s"
+                (DirectoryName proj) 
+                (config.get "packaging:output")
+              )
 
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
