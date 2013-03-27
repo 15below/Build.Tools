@@ -42,7 +42,7 @@ let private updatePackages (config: Map<string, string>) file =
             (if isNotNullOrEmpty specificId then sprintf " -Id \"%s\"" specificId else "")
     let result =
         ExecProcess (fun info ->
-            info.FileName <- config.get "core.tools" @@ nuget
+            info.FileName <- config.get "core:tools" @@ nuget
             info.WorkingDirectory <- DirectoryName file
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
