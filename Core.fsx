@@ -3,6 +3,7 @@
 #load "./Packaging.fsx"
 #load "./Versioning.fsx"
 #load "./Solution.fsx"
+#load "./Test.fsx"
 
 open Fake
 
@@ -29,12 +30,14 @@ Target "Packaging:Push"    <| Packaging.push config
 Target "Solution:Build"    <| Solution.build config
 Target "Solution:Clean"    <| Solution.clean config
 Target "Versioning:Update" <| Versioning.update config
+Target "Test:Run"          <| Test.run config
 
 "Solution:Clean"
     ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
     ==> "Packaging:Package"
+    ==> "Test:Run"
     =?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
 
