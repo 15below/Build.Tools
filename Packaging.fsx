@@ -16,10 +16,7 @@ let private filterPackageable proj =
                 | _ -> None)
 
 let private packageProject (config: Map<string, string>) proj =
-    CleanDir (sprintf "%s\%s"
-                (DirectoryName proj) 
-                (config.get "packaging:output")
-              )
+    CleanDir (config.get "packaging:output")
 
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
