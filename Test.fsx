@@ -22,10 +22,12 @@ let private ensureRunner (config : Map<string, string>) =
             failwith "NUnit.Runners directory not found, and NuGet install failed."
 
 let run (config : Map<string, string>) _ =
-    ensureRunner config
-    !! (sprintf @".\**\bin\%s\**\*.Tests.dll" (config.get "build:configuration"))
-    |> NUnit 
-        (fun defaults ->
-            { defaults with 
-                ToolPath = config.get "core:tools" @@ nunitRunners
-             })
+    let testDlls = !! (sprintf @".\**\bin\%s\**\*.Tests.dll" (config.get "build:configuration"))
+    if Seq.length testDlls > 0 then
+        ensureRunner config
+        testDlls
+        |> NUnit 
+            (fun defaults ->
+                { defaults with 
+                    ToolPath = config.get "core:tools" @@ nunitRunners
+                 })
