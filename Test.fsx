@@ -4,7 +4,7 @@
 open Fake
 open System
 
-let private nunitRunners = "./NUnit.Runners"
+let private nunitRunners = "./NUnit.Runners/tools"
 let private nuget = "./nuget/nuget.exe"
 
 let private ensureRunner (config : Map<string, string>) =
