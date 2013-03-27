@@ -12,7 +12,7 @@ let config =
         "build:configuration", environVarOrDefault "configuration"         "Release"
         "build:solution",      environVar          "solution"
         "core:tools",          environVar          "tools"
-        "packaging:output",    environVarOrDefault "output"                "C:/Packages"
+        "packaging:output",    environVarOrDefault "output"                "../output"
         "packaging:updateid",  environVarOrDefault "updateid"              ""
         "packaging:pushurl",   environVarOrDefault "pushurl"               ""
         "packaging:apikey",    environVarOrDefault "apikey"                ""
