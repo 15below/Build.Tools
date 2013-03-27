@@ -5,6 +5,7 @@
 #load "./Solution.fsx"
 #load "./Test.fsx"
 
+open System.IO
 open Fake
 
 let config = 
@@ -12,7 +13,7 @@ let config =
         "build:configuration", environVarOrDefault "configuration"         "Release"
         "build:solution",      environVar          "solution"
         "core:tools",          environVar          "tools"
-        "packaging:output",    environVarOrDefault "output"                (sprintf "%s\output" (environVar "teamcity_build_checkoutDir"))
+        "packaging:output",    environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
         "packaging:updateid",  environVarOrDefault "updateid"              ""
         "packaging:pushurl",   environVarOrDefault "pushurl"               ""
         "packaging:apikey",    environVarOrDefault "apikey"                ""
