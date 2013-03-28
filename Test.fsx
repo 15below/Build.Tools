@@ -15,7 +15,6 @@ let private ensureRunner (config : Map<string, string>) =
         let result =
             ExecProcess (fun info ->
                 info.FileName <- config.get "core:tools" @@ nuget
-                info.WorkingDirectory <- DirectoryName (config.get "core:tools")
                 info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
         if result <> 0 then
