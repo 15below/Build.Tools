@@ -150,7 +150,7 @@
 <member name="">
 
 </member>
-<member name="M:Fake.Gallio.Run(Microsoft.FSharp.Core.FSharpFunc`2{Fake.Gallio.GallioParams,Fake.Gallio.GallioParams},System.Collections.Generic.IEnumerable{System.String})">
+<member name="M:Fake.Gallio.Run(Microsoft.FSharp.Core.FSharpFunc{Fake.Gallio.GallioParams,Fake.Gallio.GallioParams},System.Collections.Generic.IEnumerable{System.String})">
  <summary>
  Runs tests through Gallio.
  </summary>
