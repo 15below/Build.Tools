@@ -2,6 +2,9 @@
 <doc>
 <assembly><name>FakeLib</name></assembly>
 <members>
+<member name="T:AssemblyInfo">
+
+</member>
 <member name="">
 
 </member>
@@ -1552,9 +1555,19 @@
 <member name="">
 
 </member>
+<member name="M:Fake.Git.CommandHelper.fireAndForgetGitCommand(System.String,System.String)">
+<summary>
+ Fires the given git command
+</summary>
+</member>
 <member name="M:Fake.Git.CommandHelper.directExec(Microsoft.FSharp.Core.FSharpFunc{System.Diagnostics.ProcessStartInfo,Microsoft.FSharp.Core.Unit})">
 <summary>
  Runs the given process and returns the exit code
+</summary>
+</member>
+<member name="M:Fake.Git.CommandHelper.fireAndForget(Microsoft.FSharp.Core.FSharpFunc{System.Diagnostics.ProcessStartInfo,Microsoft.FSharp.Core.Unit})">
+<summary>
+ Starts the given process
 </summary>
 </member>
 <member name="">
@@ -2714,6 +2727,9 @@
 <summary>
  Run NUnit on a group of assemblies.
 </summary>
+</member>
+<member name="">
+
 </member>
 <member name="">
 
@@ -4812,18 +4828,6 @@ returns the exit code
 </summary>
 </member>
 <member name="T:Fake.ZipHelper">
-
-</member>
-<member name="">
-
-</member>
-<member name="">
-
-</member>
-<member name="">
-
-</member>
-<member name="T:FakeLib.AssemblyInfo">
 
 </member>
 </members>
