@@ -2,7 +2,16 @@
 <doc>
 <assembly><name>Fake.SQL</name></assembly>
 <members>
-<member name="T:AssemblyInfo">
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="">
+
+</member>
+<member name="T:Fake.SQL.AssemblyInfo">
 
 </member>
 <member name="">
