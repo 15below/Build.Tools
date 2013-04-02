@@ -12,6 +12,11 @@ let private readAssemblyVersion file =
         |> (fun line -> Regex.Match(line, @"(?<=\().+?(?=\))").Value)
         |> (fun version -> Version (version.Trim [|'"'|]))
 
+let private escapeBranchName rawName =
+    let regex = System.Text.RegularExpressions.Regex(@"[^0-9A-Za-z-]")
+    regex.Replace(rawName, "-")
+    
+
 let private constructVersions (config: Map<string, string>) file =
     let fileVersion = readAssemblyVersion file
 
@@ -31,13 +36,13 @@ let private constructVersions (config: Map<string, string>) file =
     let suffix =
         match isLocalBuild with
             | true -> 
-                "-" + getBranchName (DirectoryName file) + "-local"
+                "-" + (getBranchName (DirectoryName file) |> escapeBranchName).Substring(0, 10) + "-local"
             | _ ->
                 match config.get "versioning:branch" with
                     | "master" -> 
                         "." + config.get "versioning:build"
                     | _ -> 
-                        "-" + config.get "versioning:branch" + "-" + config.get "versioning:build" + "-ci"
+                        "-" + (config.get "versioning:branch" |> escapeBranchName).Substring(0, 10) + "-" + config.get "versioning:build" + "-ci"
 
     assemblyVersion.ToString(), infoVersion.ToString() + suffix
 
