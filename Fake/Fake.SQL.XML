@@ -45,7 +45,7 @@
  <summary>Replaces the database files</summary>
  <user/>
 </member>
-<member name="M:Fake.SQL.SqlServer.replaceDatabaseFiles``1(System.String,Microsoft.SqlServer.Management.Smo.AttachOptions,Microsoft.FSharp.Core.FSharpFunc`2{Microsoft.FSharp.Core.Unit,``0})">
+<member name="M:Fake.SQL.SqlServer.replaceDatabaseFiles``1(System.String,Microsoft.SqlServer.Management.Smo.AttachOptions,Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Core.Unit,``0})">
 <summary>
  Replaces the database files
 </summary>
