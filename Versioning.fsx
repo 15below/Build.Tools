@@ -8,7 +8,7 @@ open Fake.Git
 
 let private readAssemblyVersion file =
     ReadFile file
-        |> Seq.find (fun line -> not line.StartsWith("//") && line.Contains "AssemblyVersion")
+        |> Seq.find (fun line -> not (line.StartsWith("//") || line.StartsWith("'")) && line.Contains "AssemblyVersion")
         |> (fun line -> Regex.Match(line, @"(?<=\().+?(?=\))").Value)
         |> (fun version -> Version (version.Trim [|'"'|]))
 
@@ -64,5 +64,6 @@ let private updateAssemblyInfo config file =
 let update config _ =
     !+ "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.fs"
+    ++ "./**/AssemblyInfo.vb"
         |> Scan
         |> Seq.iter (updateAssemblyInfo config)
