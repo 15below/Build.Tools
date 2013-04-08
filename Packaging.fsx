@@ -42,17 +42,20 @@ let private restorePackages (config: Map<string, string>) file =
 
 let private updatePackages (config: Map<string, string>) file =
     let specificId = config.get "packaging:updateid"
-    let args =
-        sprintf "update \"%s\"%s"
-            file
-            (if isNotNullOrEmpty specificId then sprintf " -Id \"%s\"" specificId else "")
-    let result =
-        ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
-            info.WorkingDirectory <- DirectoryName file
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
+    if 
+        isNullOrEmpty specificId ||
+        (isNotNullOrEmpty specificId && File.ReadAllText(file).Contains(specificId)) then
+            let args =
+                sprintf "update \"%s\"%s"
+                    file
+                    (if isNotNullOrEmpty specificId then sprintf " -Id \"%s\"" specificId else "")
+            let result =
+                ExecProcess (fun info ->
+                    info.FileName <- config.get "core:tools" @@ nuget
+                    info.WorkingDirectory <- DirectoryName file
+                    info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
-    if result <> 0 then failwithf "Error updating NuGet package %s" specificId
+            if result <> 0 then failwithf "Error updating NuGet package %s" specificId
 
 let private pushPackages (config: Map<string, string>) nupkg =
     let pushurl = config.get "packaging:pushurl"
