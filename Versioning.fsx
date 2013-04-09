@@ -63,6 +63,7 @@ let private updateAssemblyInfo config file =
 
 let update config _ =
     !+ "./**/AssemblyInfo.cs"
+    ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
     ++ "./**/AssemblyInfo.vb"
         |> Scan
