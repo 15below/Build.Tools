@@ -31,12 +31,15 @@ let private packageProject (config: Map<string, string>) proj =
     
     if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
 
+let private restoreOptions (config: Map<string, string>) =
+    if isNullOrEmpty (config.get "packaging:packages") then
+        ""
+    else
+        sprintf @" -OutputDirectory ""%s""" (config.get "packaging:packages")
+
 let private restorePackages (config: Map<string, string>) file =
-
-    printfn "--restorePackages current directory: '%s'" (Path.GetFullPath("."))
-
     let timeOut = TimeSpan.FromMinutes 5.
-    let args = sprintf @"install ""%s"" -OutputDirectory ""%s""" file (config.get "packaging:packages")
+    let args = sprintf @"install ""%s"" %s" file (restoreOptions config)
     let result = ExecProcess (fun info ->
                         info.FileName <- config.get "core:tools" @@ nuget
                         info.WorkingDirectory <- Path.GetFullPath(".")
