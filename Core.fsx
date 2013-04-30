@@ -17,7 +17,7 @@ let config =
         "packaging:updateid",  environVarOrDefault "updateid"              ""
         "packaging:pushurl",   environVarOrDefault "pushurl"               ""
         "packaging:apikey",    environVarOrDefault "apikey"                ""
-        "packaging:packages",  environVarOrDefault "packages"              currentDirectory
+        "packaging:packages",  environVarOrDefault "packages"              ""
         "versioning:build",    environVarOrDefault "build_number"          "0"
         "versioning:branch",   match environVar "teamcity_build_branch" with
                                    | "<default>" -> environVar "vcsroot_branch"
