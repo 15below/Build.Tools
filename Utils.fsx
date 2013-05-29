@@ -4,9 +4,9 @@ open Fake
 open System
 open Microsoft.FSharp.Collections
 
-let nunitRunners = "./NUnit.Runners/tools"
+let nunitRunners = @"./NUnit.Runners/tools"
 let specFlowRunners = "./SpecFlow/tools"
-let nuget = "./nuget/nuget.exe"
+let nuget = @"./nuget/nuget.exe"
 
 type Map<'Key,'Value when 'Key : comparison> with
     member this.get (name: 'Key) =

@@ -20,7 +20,8 @@ let run (config : Map<string, string>) _ =
         SpecFlow
             (fun defaults ->
                 { defaults with
-                    SubCommand = ""
+                    ToolPath = config.get "core:tools" @@ specFlowRunners
+                    SubCommand = "nunitexecutionreport"
                     ProjectFile = !! @".\**\*.Features.csproj" |>Seq.head
                     XmlTestResultFile = "SpecFlowResult.xml"
                     OutputFile = "SpecFlowResult.html"
