@@ -5,6 +5,7 @@ open System
 open System.Text.RegularExpressions
 open Fake
 open Fake.Git
+open Utils
 
 let private readAssemblyVersion file =
     ReadFile file
