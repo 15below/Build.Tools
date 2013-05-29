@@ -4,6 +4,7 @@
 open System
 open System.IO
 open Fake
+open Utils
 
 let private nuget = @"NuGet\NuGet.exe"
 
