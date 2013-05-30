@@ -4,8 +4,9 @@
 open System
 open System.IO
 open Fake
+open Utils
 
-let private nuget = "./nuget/nuget.exe"
+let private nuget = @"NuGet\NuGet.exe"
 
 let private filterPackageable proj =
     Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
@@ -31,12 +32,19 @@ let private packageProject (config: Map<string, string>) proj =
     
     if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
 
+let private installPackageOptions (config: Map<string, string>) =
+    let packagePath = (config.get "packaging:packages")
+    if isNullOrEmpty packagePath then
+        ""
+    else
+       sprintf @"-OutputDirectory ""%s""" packagePath 
+
 let private restorePackages (config: Map<string, string>) file =
     let timeOut = TimeSpan.FromMinutes 5.
-    let args = sprintf @"install ""%s""" file
+    let args = sprintf @"install ""%s"" %s" file (installPackageOptions config)
     let result = ExecProcess (fun info ->
                         info.FileName <- config.get "core:tools" @@ nuget
-                        info.WorkingDirectory <- currentDirectory
+                        info.WorkingDirectory <- Path.GetFullPath(".")
                         info.Arguments <- args) timeOut
     if result <> 0 then failwithf "Error during Nuget update. %s %s" (config.get "core:tools" @@ nuget) args
 
