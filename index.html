@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Build.Tools : Convention driven .net build scripts" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Build.Tools</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/15below/Build.Tools">View on GitHub</a>
+
+          <h1 id="project_title">Build.Tools</h1>
+          <h2 id="project_tagline">Convention driven .net build scripts</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/15below/Build.Tools/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/15below/Build.Tools/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a name="welcome-to-the-buildtools" class="anchor" href="#welcome-to-the-buildtools"><span class="octicon octicon-link"></span></a>Welcome to the Build.Tools.</h3>
+
+<p>Convention driven .net builds scripts written in F#. Sub-module this repository at the root of your code repository and set 3 environment (or command line) variables and you're good to go.</p>
+
+<p>For example, assuming you submodule this repository into a directory called tools:</p>
+
+<pre><code>tools\Fake\FAKE.exe tools\Core.fsx "target=Default" "tools=tools" "solution=src\MySolution.sln"
+</code></pre>
+
+<h4>
+<a name="what-does-it-do" class="anchor" href="#what-does-it-do"><span class="octicon octicon-link"></span></a>What does it do?</h4>
+
+<ul>
+<li>Restores NuGet dependencies</li>
+<li>Updates assembly and nuget package versions (including setting pre-release NuGet versions if you're not building from the master branch on the build server)</li>
+<li>Builds your solution</li>
+<li>Packs any nuspec files associated with project files in the repository</li>
+<li>Runs NUnit tests in dlls named *.Tests.dll (if there are any)</li>
+<li>Runs a set of SpecFlow features in a dll named *.Features.dll (if there is one)</li>
+<li>Pushes nupkg files to a NuGet server (only if running on a build server)</li>
+</ul><h3>
+<a name="why-does-it-exist" class="anchor" href="#why-does-it-exist"><span class="octicon octicon-link"></span></a>Why does it exist?</h3>
+
+<p>If you're using NuGet and practice TDD, BDD or both your build workflow nearly always ends up looking very similar to the above. Rather than rewrite it again and again for every project, we decided to set up one project to rule them all, and in the darkness bind them.</p>
+
+<p>Wait... did we say that out loud?</p>
+
+<h3>
+<a name="whats-it-based-on" class="anchor" href="#whats-it-based-on"><span class="octicon octicon-link"></span></a>What's it based on?</h3>
+
+<p>Like most open source projects, we're building on the shoulders of giants. In this case, the excellent <a href="https://github.com/fsharp/FAKE">FAKE</a> (which we also contribute to).</p>
+
+<h3>
+<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Documentation can be found in the <a href="https://github.com/15below/Build.Tools/wiki">repository wiki</a>.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Build.Tools maintained by <a href="https://github.com/15below">15below</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
