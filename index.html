@@ -34,12 +34,11 @@
         <h3>
 <a name="welcome-to-the-buildtools" class="anchor" href="#welcome-to-the-buildtools"><span class="octicon octicon-link"></span></a>Welcome to the Build.Tools project.</h3>
 
-<p>Convention driven .net builds scripts written in F#. Sub-module this repository at the root of your code repository and set 3 environment (or command line) variables and you're good to go.</p>
+<p>Convention driven .net builds scripts written in F#. Sub-module this repository at the root of your code repository and set 2 environment (or command line) variables and you're good to go.</p>
 
 <p>For example, assuming you submodule this repository into a directory called tools:</p>
 
-<pre><code>tools\Fake\FAKE.exe tools\Core.fsx "target=Default" "tools=tools" "solution=src\MySolution.sln"
-</code></pre>
+<pre><code>tools\Fake\FAKE.exe tools\Core.fsx "tools=tools" "solution=src\MySolution.sln"</code></pre>
 
 <h4>
 <a name="what-does-it-do" class="anchor" href="#what-does-it-do"><span class="octicon octicon-link"></span></a>What does it do?</h4>
@@ -69,13 +68,13 @@
 
 <p>Documentation can be found in the <a href="https://github.com/15below/Build.Tools/wiki">repository wiki</a>.</p>
 
-<p>Coding is proudly supported by: <a href="http://15below.com"><img src="images/15below_primary_logo.gif" alt="15below" /></a></p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
+        <p>Coding is proudly supported by: <a href="http://15below.com"><img id="logo" src="images/15below_primary_logo.gif" alt="15below" /></a></p>
         <p class="copyright">Build.Tools maintained by <a href="https://github.com/15below">15below</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>

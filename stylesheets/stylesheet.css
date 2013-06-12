@@ -68,7 +68,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   margin: 10px 0;
   font-weight: 700;
-  color:#222222;
+  color:#f40034;
   font-family: 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
   letter-spacing: -1px;
 }
@@ -285,7 +285,7 @@ Full-Width Styles
   z-index: 10;
   padding: 10px 50px 10px 10px;
   color: #fff;
-  background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+  background: url('../images/blacktocat.png') #bed600 no-repeat 95% 50%;
   font-weight: 700;
   box-shadow: 0 0 10px rgba(0,0,0,.5);
   border-bottom-left-radius: 2px;
@@ -294,11 +294,11 @@ Full-Width Styles
 
 #header_wrap {
   background: #f40034;
-  background: -moz-linear-gradient(top, #f40034, #330000);
-  background: -webkit-linear-gradient(top, #f40034, #330000);
-  background: -ms-linear-gradient(top, #f40034, #330000);
-  background: -o-linear-gradient(top, #f40034, #330000);
-  background: linear-gradient(top, #f40034, #330000);
+  background: -moz-linear-gradient(top, #f40034, #a60023);
+  background: -webkit-linear-gradient(top, #f40034, #a60023);
+  background: -ms-linear-gradient(top, #f40034, #a60023);
+  background: -o-linear-gradient(top, #f40034, #a60023);
+  background: linear-gradient(top, #f40034, #a60023);
 }
 
 #header_wrap .inner {
@@ -307,18 +307,16 @@ Full-Width Styles
 
 #project_title {
   margin: 0;
-  color: #fff;
+  color: #000;
   font-size: 42px;
   font-weight: 700;
-  text-shadow: #111 0px 0px 10px;
 }
 
 #project_tagline {
-  color: #fff;
+  color: #000;
   font-size: 24px;
   font-weight: 300;
   background: none;
-  text-shadow: #111 0px 0px 10px;
 }
 
 #downloads {
@@ -375,6 +373,15 @@ Full-Width Styles
 }
 
 
+/*******************************************************************************
+15below Styles
+*******************************************************************************/
+
+#logo {
+  width: 20%;
+  float: right;
+  vertical-align: middle;
+}
 
 /*******************************************************************************
 Small Device Styles
