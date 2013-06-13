@@ -105,12 +105,12 @@ p {
 }
 
 footer p {
-  color: #f2f2f2;
+  color: #373737;
 }
 
 a {
   text-decoration: none;
-  color: #007edf;
+  color: #f40034;
   text-shadow: none;
 
   transition: color 0.5s ease;
@@ -126,13 +126,13 @@ a {
 }
 
 #main_content a:hover {
-  color: #0069ba;
-  text-shadow: #0090ff 0px 0px 2px;
+  color: #f40034;
+  text-shadow: #bed600 0px 0px 2px;
 }
 
 footer a:hover {
-  color: #43adff;
-  text-shadow: #0090ff 0px 0px 2px;
+  color: #f40034;
+  text-shadow: #bed600 0px 0px 2px;
 }
 
 em {
@@ -293,12 +293,7 @@ Full-Width Styles
 }
 
 #header_wrap {
-  background: #f40034;
-  background: -moz-linear-gradient(top, #f40034, #a60023);
-  background: -webkit-linear-gradient(top, #f40034, #a60023);
-  background: -ms-linear-gradient(top, #f40034, #a60023);
-  background: -o-linear-gradient(top, #f40034, #a60023);
-  background: linear-gradient(top, #f40034, #a60023);
+  background: #f2f2f2;
 }
 
 #header_wrap .inner {
@@ -360,7 +355,6 @@ Full-Width Styles
 
 #main_content_wrap {
   background: #f2f2f2;
-  border-top: 1px solid #111;
   border-bottom: 1px solid #111;
 }
 
@@ -369,7 +363,7 @@ Full-Width Styles
 }
 
 #footer_wrap {
-  background: #330000;
+  background: #f2f2f2;
 }
 
 
