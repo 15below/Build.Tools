@@ -19,7 +19,7 @@ let private filterPackageable proj =
 let private packageProject (config: Map<string, string>) proj =
 
     let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
+        sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s" 
             proj
             (config.get "packaging:output")
             (config.get "build:configuration")
