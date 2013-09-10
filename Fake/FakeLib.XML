@@ -2780,6 +2780,9 @@
 <member name="">
 
 </member>
+<member name="">
+
+</member>
 <member name="M:Fake.NUnitHelper.writeXMLOutput(Fake.NUnitHelper.TestSuite,System.String)">
 <summary>
  writes the given TestSuite as XML file in NUnit style

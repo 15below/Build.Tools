@@ -13,6 +13,7 @@ let private generateSpecFlowReport (config : Map<string, string>) =
                 SubCommand = "nunitexecutionreport"
                 ProjectFile = !! @".\**\*.Features.csproj" |>Seq.head
                 XmlTestResultFile = "SpecFlowResult.xml"
+                TestOutputFile = "SpecFlowResult.txt"
                 OutputFile = "SpecFlowResult.html"
              })
 
