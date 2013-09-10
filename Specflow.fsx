@@ -28,6 +28,7 @@ let run (config : Map<string, string>) _ =
                 (fun defaults ->
                     { defaults with 
                         ToolPath = config.get "core:tools" @@ nunitRunners
+                        Out = "SpecFlowResult.txt"
                         OutputFile = "SpecFlowResult.xml"
                      })
         with
