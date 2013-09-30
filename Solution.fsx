@@ -5,12 +5,23 @@ open System
 open Fake
 open Utils
 
+let private runCompiler target (config: Map<string, string>) =
+    let setParams defaults =
+        { defaults with
+            Verbosity = Some(Quiet)
+            Targets = [target]
+            Properties =
+                [
+                    "Optimize", "True"
+                    "DebugSymbols", "True"
+                    "Configuration", config.get "build:configuration"
+                ]
+            MaxCpuCount = Some <| Some Environment.ProcessorCount }
+    build setParams (config.get "build:solution")
+
+
 let build (config: Map<string, string>) _ =
-    [config.get "build:solution"]
-        |> MSBuild "" "Build" ["Configuration", config.get "build:configuration"]
-        |> ignore
+    runCompiler "Build" config
 
 let clean (config: Map<string, string>) _ =
-    [config.get "build:solution"]
-        |> MSBuild "" "Clean" ["Configuration", config.get "build:configuration"]
-        |> ignore
+    runCompiler "Clean" config
