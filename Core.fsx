@@ -11,46 +11,39 @@ open Fake
 
 let config = 
     Map.ofList [
-        "build:configuration",          environVarOrDefault "configuration"         "Release"
-        "build:solution",               environVar          "solution"
-        "core:tools",                   environVar          "tools"
-        "packaging:output",             environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
-        "packaging:updateid",           environVarOrDefault "updateid"              ""
-        "packaging:pushurl",            environVarOrDefault "pushurl"               ""
-        "packaging:apikey",             environVarOrDefault "apikey"                ""
-        "packaging:packages",           environVarOrDefault "packages"              ""
-        "packaging:outputfordeploy",    environVarOrDefault "outputfordeploy"       (sprintf "%s\outputDeploy" (Path.GetFullPath(".")))
-        "packaging:pushurlfordeploy",   environVarOrDefault "pushurlfordeploy"      ""
-        "packaging:apikeyfordeploy",    environVarOrDefault "apikeyfordeploy"       ""
-        "versioning:build",             environVarOrDefault "build_number"          "0"
-        "versioning:branch",            match environVar "teamcity_build_branch" with
-                                            | "<default>" -> environVar "vcsroot_branch"
-                                            | _ -> environVar "teamcity_build_branch"
+        "build:configuration", environVarOrDefault "configuration"         "Release"
+        "build:solution",      environVar          "solution"
+        "core:tools",          environVar          "tools"
+        "packaging:output",    environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
+        "packaging:updateid",  environVarOrDefault "updateid"              ""
+        "packaging:pushurl",   environVarOrDefault "pushurl"               ""
+        "packaging:apikey",    environVarOrDefault "apikey"                ""
+        "packaging:packages",  environVarOrDefault "packages"              ""
+        "versioning:build",    environVarOrDefault "build_number"          "0"
+        "versioning:branch",   match environVar "teamcity_build_branch" with
+                                   | "<default>" -> environVar "vcsroot_branch"
+                                   | _ -> environVar "teamcity_build_branch"
     ]
 
-Target "Default"                    <| DoNothing
-Target "Packaging:Package"          <| Packaging.package config
-Target "Packaging:Restore"          <| Packaging.restore config
-Target "Packaging:Update"           <| Packaging.update config
-Target "Packaging:Push"             <| Packaging.push config
-Target "Packaging:PackageForDeploy" <| Packaging.packageForDeploy config
-Target "Packaging:PushForDeploy"    <| Packaging.pushForDeploy config
-Target "Solution:Build"             <| Solution.build config
-Target "Solution:Clean"             <| Solution.clean config
-Target "Versioning:Update"          <| Versioning.update config
-Target "Test:Run"                   <| Test.run config
-Target "SpecFlow:Run"               <| Specflow.run config
+Target "Default"           <| DoNothing
+Target "Packaging:Package" <| Packaging.package config
+Target "Packaging:Restore" <| Packaging.restore config
+Target "Packaging:Update"  <| Packaging.update config
+Target "Packaging:Push"    <| Packaging.push config
+Target "Solution:Build"    <| Solution.build config
+Target "Solution:Clean"    <| Solution.clean config
+Target "Versioning:Update" <| Versioning.update config
+Target "Test:Run"          <| Test.run config
+Target "SpecFlow:Run"      <| Specflow.run config
 
 "Solution:Clean"
     ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
     ==> "Packaging:Package"
-    ==> "Packaging:PackageForDeploy"
     ==> "SpecFlow:Run"
     ==> "Test:Run"
     =?> ("Packaging:Push", not isLocalBuild)
-    =?> ("Packaging:PushForDeploy", not isLocalBuild)
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"

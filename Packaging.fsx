@@ -32,25 +32,6 @@ let private packageProject (config: Map<string, string>) proj =
     
     if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
 
-let private packageNuSpec (config: Map<string, string>) spec =
-
-    let version = "0.0.0.0"
-
-    let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s -Properties Version=%s" 
-            version
-            (config.get "packaging:output")
-            (config.get "build:configuration")
-            version
-
-    let result =
-        ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
-            info.WorkingDirectory <- DirectoryName version
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
-    
-    if result <> 0 then failwithf "Error packaging NuGet package. NuSPec file: %s" version
- 
 let private installPackageOptions (config: Map<string, string>) =
     let packagePath = (config.get "packaging:packages")
     if isNullOrEmpty packagePath then
@@ -84,7 +65,10 @@ let private updatePackages (config: Map<string, string>) file =
 
             if result <> 0 then failwithf "Error updating NuGet package %s" specificId
 
-let private pushPackages (config: Map<string, string>) pushurl apikey nupkg =
+let private pushPackages (config: Map<string, string>) nupkg =
+    let pushurl = config.get "packaging:pushurl"
+    let apikey = config.get "packaging:apikey"
+
     if isNullOrEmpty pushurl || isNullOrEmpty apikey then failwith "You must specify both apikey and pushurl to push NuGet packages."
 
     let args =
@@ -113,24 +97,8 @@ let package (config : Map<string, string>) _ =
 
     !! "./**/*.*proj"
         |> Seq.choose filterPackageable
-        |> Seq.iter (packageNuGet config)
+        |> Seq.iter (packageProject config)
 
 let push (config : Map<string, string>) _ =
-    let pushurl = config.get "packaging:pushurl"
-    let apikey = config.get "packaging:apikey"
-
     !! (config.get "packaging:output" @@ "./**/*.nupkg")
-        |> Seq.iter (pushPackages config pushurl apikey)
-
-let packageForDeploy (config : Map<string, string>) _ =
-    CleanDir (config.get "packaging:outputfordeploy")
-
-    !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (packageNuSpec config)
-
-let pushForDeploy (config : Map<string, string>) _ =
-    let pushurl = config.get "packaging:pushurlfordeploy"
-    let apikey = config.get "packaging:apikeyfordeploy"
-
-    !! (config.get "packaging:outputfordeploy" @@ "./**/*.nupkg")
-        |> Seq.iter (pushPackages config pushurl apikey)
+        |> Seq.iter (pushPackages config)
