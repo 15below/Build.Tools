@@ -30,7 +30,7 @@ let private constructInfoVersion (config: Map<string, string>) (fileVersion: Ver
     let suffix =
         match isLocalBuild with
             | true -> 
-                "-" + (getBranchName (DirectoryName file) |> escapeBranchName) + "-local"
+                "-" + (branch |> escapeBranchName) + "-local"
             | _ ->
                 match config.get "versioning:branch" with
                     | "master" -> 
