@@ -20,7 +20,7 @@ let private escapeBranchName rawName =
     safeChars.[0..(min 9 <| String.length safeChars - 1)]
 
     
-let private constructInfoVersion (config: Map<string, string>) (fileVersion: Version) branch =
+let private constructInfoVersion (config: Map<string, string>) (fileVersion: Version) file =
     let infoVersion = 
         Version (
             fileVersion.Major, 
@@ -30,7 +30,7 @@ let private constructInfoVersion (config: Map<string, string>) (fileVersion: Ver
     let suffix =
         match isLocalBuild with
             | true -> 
-                "-" + (branch |> escapeBranchName) + "-local"
+                "-" + ((getBranchName (DirectoryName file)) |> escapeBranchName) + "-local"
             | _ ->
                 match config.get "versioning:branch" with
                     | "master" -> 
@@ -51,7 +51,7 @@ let private constructVersions (config: Map<string, string>) file =
             fileVersion.Build, 
             int <| config.get "versioning:build")
 
-    assemblyVersion.ToString(), (constructInfoVersion config fileVersion (getBranchName (DirectoryName file)))
+    assemblyVersion.ToString(), (constructInfoVersion config fileVersion file)
 
 let private updateAssemblyInfo config file =
     let versions = constructVersions config file
@@ -74,7 +74,7 @@ let private updateDeployNuspec config (file:string) =
 
     let fileVersion = Version(versionNode.InnerText)
 
-    versionNode.InnerText <- (constructInfoVersion config fileVersion (getBranchName (DirectoryName file)))
+    versionNode.InnerText <- (constructInfoVersion config fileVersion file)
     WriteStringToFile false file (xdoc.OuterXml.ToString())
 
 let update config _ =
