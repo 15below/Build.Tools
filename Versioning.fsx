@@ -3,6 +3,7 @@
 
 open System
 open System.Text.RegularExpressions
+open System.Xml
 open Fake
 open Fake.Git
 open Utils
@@ -19,17 +20,7 @@ let private escapeBranchName rawName =
     safeChars.[0..(min 9 <| String.length safeChars - 1)]
 
     
-
-let private constructVersions (config: Map<string, string>) file =
-    let fileVersion = readAssemblyVersion file
-
-    let assemblyVersion = 
-        Version (
-            fileVersion.Major, 
-            fileVersion.Minor,
-            fileVersion.Build, 
-            int <| config.get "versioning:build")
-
+let private constructInfoVersion (config: Map<string, string>) (fileVersion: Version) branch =
     let infoVersion = 
         Version (
             fileVersion.Major, 
@@ -47,7 +38,20 @@ let private constructVersions (config: Map<string, string>) file =
                     | _ -> 
                         "-" + (config.get "versioning:branch" |> escapeBranchName) + "-" + config.get "versioning:build" + "-ci"
 
-    assemblyVersion.ToString(), infoVersion.ToString() + suffix
+    infoVersion.ToString() + suffix
+
+
+let private constructVersions (config: Map<string, string>) file =
+    let fileVersion = readAssemblyVersion file
+
+    let assemblyVersion = 
+        Version (
+            fileVersion.Major, 
+            fileVersion.Minor,
+            fileVersion.Build, 
+            int <| config.get "versioning:build")
+
+    assemblyVersion.ToString(), (constructInfoVersion config fileVersion (getBranchName (DirectoryName file)))
 
 let private updateAssemblyInfo config file =
     let versions = constructVersions config file
@@ -62,6 +66,17 @@ let private updateAssemblyInfo config file =
                  AssemblyInformationalVersion = snd versions
         })
 
+let private updateDeployNuspec config (file:string) =
+    let xdoc = new XmlDocument()
+    ReadFileAsString file |> xdoc.LoadXml
+
+    let versionNode = xdoc.SelectSingleNode "/package/metadata/version"
+
+    let fileVersion = Version(versionNode.InnerText)
+
+    versionNode.InnerText <- (constructInfoVersion config fileVersion (getBranchName (DirectoryName file)))
+    WriteStringToFile false file (xdoc.OuterXml.ToString())
+
 let update config _ =
     !+ "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
@@ -69,3 +84,7 @@ let update config _ =
     ++ "./**/AssemblyInfo.vb"
         |> Scan
         |> Seq.iter (updateAssemblyInfo config)
+
+let updateDeploy config _ =
+    !! "./**/Deploy/*.nuspec"
+        |> Seq.iter (updateDeployNuspec config)
