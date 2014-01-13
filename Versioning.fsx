@@ -51,6 +51,9 @@ let private constructVersions (config: Map<string, string>) file =
             fileVersion.Build, 
             int <| config.get "versioning:build")
 
+    printf "%s\r\n" file
+    printf "%s\r\n" (DirectoryName file)
+    printf "%s\r\n" (getBranchName (DirectoryName file))
     assemblyVersion.ToString(), (constructInfoVersion config fileVersion (getBranchName (DirectoryName file)))
 
 let private updateAssemblyInfo config file =
