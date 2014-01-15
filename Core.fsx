@@ -25,6 +25,7 @@ let config =
                                    | _ -> environVar "teamcity_build_branch"
     ]
 
+// Target definitions
 Target "Default"           <| DoNothing
 Target "Packaging:Package" <| Packaging.package config
 Target "Packaging:Restore" <| Packaging.restore config
@@ -36,6 +37,7 @@ Target "Versioning:Update" <| Versioning.update config
 Target "Test:Run"          <| Test.run config
 Target "SpecFlow:Run"      <| Specflow.run config
 
+// Build order
 "Solution:Clean"
     ==> "Packaging:Restore"
     ==> "Versioning:Update"

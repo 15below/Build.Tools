@@ -127,6 +127,6 @@ let push (config : Map<string, string>) _ =
 
 let pushDeploy (config : Map<string, string>) _ =
     let pushurl = config.get "packaging:deploypushurl"
-    let apikey = config.get "packaging:apikey"
+    let apikey = config.get "packaging:deployapikey"
     !! (config.get "packaging:deployoutput" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config pushurl apikey)
