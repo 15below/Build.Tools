@@ -16,4 +16,9 @@ For example, assuming you submodule this repository into a directory called tool
 * Runs a set of SpecFlow features in a dll named *.Features.dll (if there is one)
 * Pushes nupkg files to a NuGet server (only if running on a build server)
 
+Optionally it can also:
+
+* Build any nuspec file found in a Deploy folder in the repository
+* Push nupkg files generated from a Deploy folder nuspec to a NuGet server
+
 Check the wiki for documentation.
