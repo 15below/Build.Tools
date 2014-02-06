@@ -4,13 +4,17 @@
 open Fake
 open Utils
 open System
+open System.IO
 
-let npm = System.IO.Path.Combine("C:\\Program Files (x86)\\", "nodejs\\npm.cmd")
-let grunt = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm\\grunt.cmd")
+let npm64 = Path.Combine("C:\\Program Files\\", "nodejs\\npm.cmd")
+let npm86 = Path.Combine("C:\\Program Files (x86)\\", "nodejs\\npm.cmd")
+let grunt = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm\\grunt.cmd")
 
 let install (config : Map<string, string>) _ =
 
     let args = "install"
+
+    let npm = match File.Exists npm64 with | true -> npm64 | _ -> npm86
 
     let result =
         ExecProcess (fun info ->
