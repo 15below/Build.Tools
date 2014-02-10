@@ -69,13 +69,16 @@ let private updateAssemblyInfo config file =
 let private updateDeployNuspec config (file:string) =
     let xdoc = new XmlDocument()
     ReadFileAsString file |> xdoc.LoadXml
-
+    
     let versionNode = xdoc.SelectSingleNode "/package/metadata/version"
 
-    let fileVersion = Version(versionNode.InnerText)
+    let semVer = SemVerHelper.parse(versionNode.InnerText.ToString())
+
+    let fileVersion = new Version(semVer.Major, semVer.Minor, semVer.Patch, 0)
 
     versionNode.InnerText <- (constructInfoVersion config fileVersion file)
-    WriteStringToFile false file (xdoc.OuterXml.ToString())
+    
+    WriteStringToFile false file (xdoc.OuterXml.ToString().Replace("><",">\n<"))
 
 let update config _ =
     !+ "./**/AssemblyInfo.cs"
