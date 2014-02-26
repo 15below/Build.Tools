@@ -6,15 +6,16 @@ open Utils
 open System
 open System.IO
 
-let npm64 = Path.Combine("C:\\Program Files\\", "nodejs\\npm.cmd")
-let npm86 = Path.Combine("C:\\Program Files (x86)\\", "nodejs\\npm.cmd")
-let grunt = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm\\grunt.cmd")
+let nodeDir64 = "C:\\Program Files\\nodejs\\"
+let nodeDir86 = "C:\\Program Files (x86)\\nodejs\\"
+let nodeDir = match Directory.Exists nodeDir64 with | true -> nodeDir64 | _ -> nodeDir86
+let node = Path.Combine(nodeDir, "node.exe")
+let npm = Path.Combine(nodeDir, "npm.cmd")
+let grunt = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm\\node_modules\\grunt-cli\\bin\\grunt")
 
 let install (config : Map<string, string>) _ =
 
     let args = "install"
-
-    let npm = match File.Exists npm64 with | true -> npm64 | _ -> npm86
 
     let result =
         ExecProcess (fun info ->
@@ -26,11 +27,11 @@ let install (config : Map<string, string>) _ =
 
 let concatAndUglify (config : Map<string, string>) _ =
 
-    let args = "--env=\"production\""
+    let args = grunt + " --env=\"production\""
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- grunt
+            info.FileName <- node
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
@@ -38,11 +39,11 @@ let concatAndUglify (config : Map<string, string>) _ =
 
 let karma (config : Map<string, string>) _ =
 
-    let args = "karma"
+    let args = grunt + " karma"
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- grunt
+            info.FileName <- node
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
