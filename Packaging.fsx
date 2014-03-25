@@ -19,10 +19,11 @@ let private filterPackageable proj =
 let private packageProject (config: Map<string, string>) outputDir proj =
 
     let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s" 
+        sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s;VisualStudioVersion=%s" 
             proj
             outputDir
             (config.get "build:configuration")
+            (config.get "vs:version")
 
     let result =
         ExecProcess (fun info ->
@@ -35,10 +36,11 @@ let private packageProject (config: Map<string, string>) outputDir proj =
 let private packageDeployment (config: Map<string, string>) outputDir proj =
 
     let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s" 
+        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s" 
             proj
             outputDir
             (config.get "build:configuration")
+            (config.get "vs:version")
 
     let result =
         ExecProcess (fun info ->
