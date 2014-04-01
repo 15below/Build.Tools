@@ -1,8 +1,12 @@
 #r "./fake/fakelib.dll"
+#r "System.Xml.Linq.dll"
+#r "System.IO.Compression.dll"
 #load "./Utils.fsx"
 
 open System
 open System.IO
+open System.Xml.Linq
+open System.IO.Compression
 open Fake
 open Utils
 
@@ -132,3 +136,41 @@ let pushDeploy (config : Map<string, string>) _ =
     let apikey = config.get "packaging:deployapikey"
     !! (config.get "packaging:deployoutput" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config pushurl apikey)
+
+let private makeConstraint vs =
+    match Version.TryParse vs with
+    | true, version -> 
+        Some (sprintf "[%O,%i)" version (version.Major + 1))
+    | _ -> None
+
+let private applyConstraint (xml:string) =
+    let xn s = XName.Get(s)    
+    let xns s = XNamespace.Get(s)
+    let doc = XDocument.Parse(xml)
+    let ns = xns "http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+    doc
+        .Element(ns + ("package"))
+        .Element(ns + "metadata")
+        .Element(ns + "dependencies")
+        .Elements(ns + "dependency")
+        |> Seq.map (fun e ->  e, makeConstraint (e.Attribute(xn "version").Value))
+        |> Seq.choose (fun (e, v) -> if v.IsSome then Some (e, v.Value) else None)
+        |> Seq.iter (fun (e, v) -> e.SetAttributeValue(xn "version", v))
+    doc.ToString()
+
+let private transform nuSpec f =
+    use xp = new ZipArchive(new FileStream(nuSpec, FileMode.Open), ZipArchiveMode.Update)
+    let entry =
+        xp.Entries
+        |> Seq.find (fun x -> x.Name.EndsWith (".nuspec"))
+    let (text:string) =
+        use sr = new StreamReader(entry.Open())
+        sr.ReadToEnd() |> f
+    use w = new StreamWriter(entry.Open())
+    w.Write text
+    w.BaseStream.SetLength(w.BaseStream.Position)
+        
+//constrains a nuget package to sensible dependency ranges
+let constrain (config : Map<string, string>) () =
+    !! (config.get "packaging:output" @@ "./**/*.nupkg")
+    |> Seq.iter (fun f -> transform f applyConstraint)
