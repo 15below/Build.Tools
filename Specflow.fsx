@@ -5,16 +5,24 @@ open Fake
 open Utils
 open System
 
+let private specFlowResultTextFile = "SpecFlowResult.txt"
+let private specFlowResultHtmlFile = "SpecFlowResult.html"
+let private specFlowResultXmlFile = "SpecFlowResult.xml"
+let private testCategories = environVarOrDefault "TestCategories" ""
+
 let private generateSpecFlowReport (config : Map<string, string>) =
+    DeleteFile specFlowResultTextFile
+    DeleteFile specFlowResultHtmlFile
+    DeleteFile specFlowResultXmlFile
     SpecFlow
         (fun defaults ->
             { defaults with
                 ToolPath = config.get "core:tools" @@ specFlowRunners
                 SubCommand = "nunitexecutionreport"
                 ProjectFile = !! @".\**\*.Features.csproj" |>Seq.head
-                XmlTestResultFile = "SpecFlowResult.xml"
-                TestOutputFile = "SpecFlowResult.txt"
-                OutputFile = "SpecFlowResult.html"
+                XmlTestResultFile = specFlowResultXmlFile
+                TestOutputFile = specFlowResultTextFile
+                OutputFile = specFlowResultHtmlFile
              })
 
 let run (config : Map<string, string>) _ =
@@ -28,8 +36,12 @@ let run (config : Map<string, string>) _ =
                 (fun defaults ->
                     { defaults with 
                         ToolPath = config.get "core:tools" @@ nunitRunners
-                        Out = "SpecFlowResult.txt"
-                        OutputFile = "SpecFlowResult.xml"
+                        Out = specFlowResultTextFile
+                        OutputFile = specFlowResultXmlFile
+                        IncludeCategory = testCategories 
+                        ErrorLevel = DontFailBuild
+                        DisableShadowCopy = true
+                        ShowLabels = true
                      })
         with
         | e ->
