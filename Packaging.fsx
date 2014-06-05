@@ -22,10 +22,16 @@ let private filterPackageable proj =
 
 let private packageProject (config: Map<string, string>) outputDir proj =
 
+    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
+                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | _ -> outputDir
+
+    Directory.CreateDirectory(outputDirFull) |> ignore
+
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s;VisualStudioVersion=%s" 
             proj
-            outputDir
+            outputDirFull
             (config.get "build:configuration")
             (config.get "vs:version")
 
@@ -39,10 +45,16 @@ let private packageProject (config: Map<string, string>) outputDir proj =
 
 let private packageDeployment (config: Map<string, string>) outputDir proj =
 
+    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
+                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | _ -> outputDir
+
+    Directory.CreateDirectory(outputDirFull) |> ignore
+
     let args =
         sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s" 
             proj
-            outputDir
+            outputDirFull
             (config.get "build:configuration")
             (config.get "vs:version")
 
@@ -112,15 +124,21 @@ let update config _ =
     !! "./**/packages.config"
         |> Seq.iter (updatePackages config)
 
+let cleanDirOnceHistory = new System.Collections.Generic.List<string>()
+let CleanDirOnce dir =
+    if (cleanDirOnceHistory.Contains(dir)) = false then
+        cleanDirOnceHistory.Add(dir)
+        CleanDir dir
+
 let package (config : Map<string, string>) _ =
-    CleanDir (config.get "packaging:output")
+    CleanDirOnce (config.get "packaging:output")
 
     !! "./**/*.*proj"
         |> Seq.choose filterPackageable
         |> Seq.iter (packageProject config (config.get "packaging:output"))
 
 let packageDeploy (config : Map<string, string>) _ =
-    CleanDir (config.get "packaging:deployoutput")
+    CleanDirOnce (config.get "packaging:deployoutput")
 
     !! "./**/Deploy/*.nuspec"
         |> Seq.iter (packageDeployment config (config.get "packaging:deployoutput"))
