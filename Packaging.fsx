@@ -22,7 +22,10 @@ let private filterPackageable proj =
 
 let private packageProject (config: Map<string, string>) outputDir proj =
 
-    let outputDirFull = (outputDir + (if (config.get "packaging:outputsubdirs") = "true" then "\\" + Path.GetFileNameWithoutExtension(proj) else ""))
+    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
+                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | _ -> outputDir
+
     Directory.CreateDirectory(outputDirFull) |> ignore
 
     let args =
@@ -42,7 +45,10 @@ let private packageProject (config: Map<string, string>) outputDir proj =
 
 let private packageDeployment (config: Map<string, string>) outputDir proj =
 
-    let outputDirFull = (outputDir + (if (config.get "packaging:outputsubdirs") = "true" then "\\" + Path.GetFileNameWithoutExtension(proj) else ""))
+    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
+                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | _ -> outputDir
+
     Directory.CreateDirectory(outputDirFull) |> ignore
 
     let args =
