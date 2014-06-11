@@ -52,7 +52,7 @@ let private packageDeployment (config: Map<string, string>) outputDir proj =
     Directory.CreateDirectory(outputDirFull) |> ignore
 
     let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s" 
+        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s -NoPackageAnalysis" 
             proj
             outputDirFull
             (config.get "build:configuration")
