@@ -102,7 +102,7 @@ let private updatePackages (config: Map<string, string>) file =
 
 let private getPackageName nupkg =
     // Regex turns D:\output\My.Package.1.0.0.0.nupkg into My.Package
-    let regex = new Regex(".*\\\\([^\\\\]+)\\.[\\d]+\\.[\\d]+\\.[\\d]+\\.[\\d]+\\.nupkg")
+    let regex = new Regex(".*\\\\([^\\\\]+)\\.[\\d]+\\.[\\d]+\\.[\\d]+[\\.\\-][\\d\\-a-zA-Z]+\\.nupkg")
     regex.Replace(nupkg, "$1")
 
 let private pushPackagesToDir (config: Map<string, string>) pushdir nupkg =
