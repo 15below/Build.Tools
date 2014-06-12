@@ -105,10 +105,10 @@ let private getPackageName nupkg =
     let regex = new Regex(".*\\\\([^\\\\]+)\\.[\\d]+\\.[\\d]+\\.[\\d]+[\\.\\-][\\d\\-a-zA-Z]+\\.nupkg")
     regex.Replace(nupkg, "$1")
 
-let private pushPackagesToDir (config: Map<string, string>) pushdir nupkg =
+let private pushPackagesToDir (config: Map<string, string>) dir nupkg =
     let info = new FileInfo(nupkg)
     let name = getPackageName nupkg
-    let directory = sprintf "%s\%s" pushdir name
+    let directory = sprintf "%s\%s" dir name
     if (not (Directory.Exists(directory))) then 
         Directory.CreateDirectory(directory) |> ignore
     let file = info.CopyTo(sprintf "%s\%s" directory info.Name, true)
@@ -129,11 +129,13 @@ let private pushPackagesToUrl (config: Map<string, string>) pushurl apikey nupkg
     if result <> 0 then failwithf "Error pushing NuGet package %s" nupkg
 
 let pushPackages (config: Map<string, string>) pushto pushdir pushurl apikey nupkg =
-    match pushto with
-    | "dir" ->
-        if isNullOrEmpty pushdir then failwith "You must specify pushdir to push NuGet packages with the pushto=dir option."
-        pushPackagesToDir config pushdir nupkg
-    | "url" | _ ->
+    match pushto, pushdir with
+    | Some "dir", Some dir ->
+        if isNullOrEmpty dir then failwith "You must specify pushdir to push NuGet packages with the pushto=dir option."
+        pushPackagesToDir config dir nupkg
+    | Some "dir", None ->
+        failwith "You must specify pushdir to push NuGet packages with the pushto=dir option."
+    | Some "url", _ | None, _ | _, _ ->
         if isNullOrEmpty pushurl || isNullOrEmpty apikey then failwith "You must specify both apikey and pushurl to push NuGet packages with the pushto=url option."
         pushPackagesToUrl config pushurl apikey nupkg
 
@@ -165,16 +167,16 @@ let packageDeploy (config : Map<string, string>) _ =
         |> Seq.iter (packageDeployment config (config.get "packaging:deployoutput"))
 
 let push (config : Map<string, string>) _ =
-    let pushdir = config.get "packaging:pushdir"
-    let pushto = config.get "packaging:pushto"
+    let pushdir = config.TryFind "packaging:pushdir"
+    let pushto = config.TryFind "packaging:pushto"
     let pushurl = config.get "packaging:pushurl"
     let apikey = config.get "packaging:apikey"
     !! (config.get "packaging:output" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config pushto pushdir pushurl apikey)
 
 let pushDeploy (config : Map<string, string>) _ =
-    let pushdir = config.get "packaging:deploypushdir"
-    let pushto = config.get "packaging:deploypushto"
+    let pushdir = config.TryFind "packaging:deploypushdir"
+    let pushto = config.TryFind "packaging:deploypushto"
     let pushurl = config.get "packaging:deploypushurl"
     let apikey = config.get "packaging:deployapikey"
     !! (config.get "packaging:deployoutput" @@ "./**/*.nupkg")
