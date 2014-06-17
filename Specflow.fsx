@@ -44,6 +44,7 @@ let run (config : Map<string, string>) _ =
                         ErrorLevel = DontFailBuild
                         DisableShadowCopy = true
                         ShowLabels = true
+                        TimeOut = TimeSpan(1,0,0)
                      })
         with
         | e ->
