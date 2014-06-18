@@ -11,19 +11,27 @@ open Fake
 
 let config = 
     Map.ofList [
-        "build:configuration", environVarOrDefault "configuration"         "Release"
-        "build:solution",      environVar          "solution"
-        "core:tools",          environVar          "tools"
-        "packaging:output",    environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
-        "packaging:updateid",  environVarOrDefault "updateid"              ""
-        "packaging:pushurl",   environVarOrDefault "pushurl"               ""
-        "packaging:apikey",    environVarOrDefault "apikey"                ""
-        "packaging:packages",  environVarOrDefault "packages"              ""
-        "versioning:build",    environVarOrDefault "build_number"          "0"
-        "versioning:branch",   match environVar "teamcity_build_branch" with
-                                   | "<default>" -> environVar "vcsroot_branch"
-                                   | _ -> environVar "teamcity_build_branch"
-        "vs:version",          environVarOrDefault "vs_version"            "11.0" ]
+        "build:configuration",          environVarOrDefault "configuration"         "Release"
+        "build:solution",               environVar          "solution"
+        "core:tools",                   environVar          "tools"
+        "packaging:output",             environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
+        "packaging:deployoutput",       environVarOrDefault "deployoutput"          (sprintf "%s\deploy" (Path.GetFullPath(".")))
+        "packaging:outputsubdirs",      environVarOrDefault "outputsubdirs"         "false"
+        "packaging:updateid",           environVarOrDefault "updateid"              ""
+        "packaging:pushto",             environVarOrDefault "pushto"                ""
+        "packaging:pushdir",            environVarOrDefault "pushdir"               ""
+        "packaging:pushurl",            environVarOrDefault "pushurl"               ""
+        "packaging:apikey",             environVarOrDefault "apikey"                ""
+        "packaging:deploypushto",       environVarOrDefault "deploypushto"          ""
+        "packaging:deploypushdir",      environVarOrDefault "deploypushdir"         ""
+        "packaging:deploypushurl",      environVarOrDefault "deploypushurl"         ""
+        "packaging:deployapikey",       environVarOrDefault "deployapikey"          ""
+        "packaging:packages",           environVarOrDefault "packages"              ""
+        "versioning:build",             environVarOrDefault "build_number"          "0"
+        "versioning:branch",            match environVar "teamcity_build_branch" with
+                                            | "<default>" -> environVar "vcsroot_branch"
+                                            | _ -> environVar "teamcity_build_branch"
+        "vs:version",                   environVarOrDefault "vs_version"            "11.0" ]
 
 // Target definitions
 Target "Default"           <| DoNothing

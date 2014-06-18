@@ -167,16 +167,16 @@ let packageDeploy (config : Map<string, string>) _ =
         |> Seq.iter (packageDeployment config (config.get "packaging:deployoutput"))
 
 let push (config : Map<string, string>) _ =
-    let pushdir = config.TryFind "packaging:pushdir"
     let pushto = config.TryFind "packaging:pushto"
+    let pushdir = config.TryFind "packaging:pushdir"
     let pushurl = config.get "packaging:pushurl"
     let apikey = config.get "packaging:apikey"
     !! (config.get "packaging:output" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config pushto pushdir pushurl apikey)
 
 let pushDeploy (config : Map<string, string>) _ =
-    let pushdir = config.TryFind "packaging:deploypushdir"
     let pushto = config.TryFind "packaging:deploypushto"
+    let pushdir = config.TryFind "packaging:deploypushdir"
     let pushurl = config.get "packaging:deploypushurl"
     let apikey = config.get "packaging:deployapikey"
     !! (config.get "packaging:deployoutput" @@ "./**/*.nupkg")
