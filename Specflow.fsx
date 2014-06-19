@@ -32,22 +32,18 @@ let run (config : Map<string, string>) _ =
     if Seq.length testDlls > 0 then
         ensureNunitRunner config
         ensureSpecFlowRunner config
-        try
-            testDlls
-            |> NUnit 
-                (fun defaults ->
-                    { defaults with 
-                        ToolPath = config.get "core:tools" @@ nunitRunners
-                        Out = specFlowResultTextFile
-                        OutputFile = specFlowResultXmlFile
-                        IncludeCategory = testCategories 
-                        ErrorLevel = DontFailBuild
-                        DisableShadowCopy = true
-                        ShowLabels = true
-                        TimeOut = TimeSpan(1,0,0)
-                     })
-        with
-        | e ->
-            generateSpecFlowReport config
-            raise e
+
+        testDlls
+        |> NUnit 
+            (fun defaults ->
+                { defaults with 
+                    ToolPath = config.get "core:tools" @@ nunitRunners
+                    Out = specFlowResultTextFile
+                    OutputFile = specFlowResultXmlFile
+                    IncludeCategory = testCategories 
+                    ErrorLevel = DontFailBuild
+                    DisableShadowCopy = true
+                    ShowLabels = true
+                    TimeOut = TimeSpan(1,0,0)
+                    })       
         generateSpecFlowReport config
