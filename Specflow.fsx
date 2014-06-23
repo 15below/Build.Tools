@@ -42,8 +42,8 @@ let run (config : Map<string, string>) _ =
                     OutputFile = specFlowResultXmlFile
                     IncludeCategory = testCategories 
                     ErrorLevel = DontFailBuild
-                    DisableShadowCopy = true
+                    DisableShadowCopy = false
                     ShowLabels = true
-                    TimeOut = TimeSpan(1,0,0)
+                    TimeOut = TimeSpan.FromHours 1.
                     })       
         generateSpecFlowReport config
