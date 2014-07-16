@@ -27,7 +27,7 @@ let install (config : Map<string, string>) _ =
 
 let concatAndUglify (config : Map<string, string>) _ =
 
-    let args = grunt + " --env=\"production\""
+    let args = "\"" + grunt + "\" --env=\"production\""
 
     let result =
         ExecProcess (fun info ->
@@ -39,7 +39,7 @@ let concatAndUglify (config : Map<string, string>) _ =
 
 let karma (config : Map<string, string>) _ =
 
-    let args = grunt + " karma"
+    let args = "\"" + grunt + "\" karma"
 
     let result =
         ExecProcess (fun info ->
