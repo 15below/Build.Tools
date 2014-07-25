@@ -34,16 +34,23 @@ let config =
         "vs:version",                   environVarOrDefault "vs_version"            "11.0" ]
 
 // Target definitions
-Target "Default"           <| DoNothing
-Target "Packaging:Package" <| Packaging.package config
-Target "Packaging:Restore" <| Packaging.restore config
-Target "Packaging:Update"  <| Packaging.update config
-Target "Packaging:Push"    <| Packaging.push config
-Target "Solution:Build"    <| Solution.build config
-Target "Solution:Clean"    <| Solution.clean config
-Target "Versioning:Update" <| Versioning.update config
-Target "Test:Run"          <| Test.run config
-Target "SpecFlow:Run"      <| Specflow.run config
+Target "Default"                       <| DoNothing
+Target "Packaging:Package"             <| Packaging.package config
+Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
+Target "Packaging:Restore"             <| Packaging.restore config
+Target "Packaging:Update"              <| Packaging.update config
+Target "Packaging:Push"                <| Packaging.push config
+Target "Packaging:Constrain"           <| Packaging.constrain config
+Target "Packaging:PushDeploy"          <| Packaging.pushDeploy config
+Target "Solution:Build"                <| Solution.build config
+Target "Solution:Clean"                <| Solution.clean config
+Target "Versioning:Update"             <| Versioning.update config
+Target "Versioning:UpdateDeployNuspec" <| Versioning.updateDeploy config
+Target "Grunt:Install"                 <| Grunt.install config
+Target "Grunt:ConcatAndUglify"         <| Grunt.concatAndUglify config
+Target "Grunt:Karma"                   <| Grunt.karma config
+Target "Test:Run"                      <| Test.run config
+Target "SpecFlow:Run"                  <| Specflow.run config
 
 // Build order
 "Solution:Clean"
