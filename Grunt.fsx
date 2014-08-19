@@ -25,9 +25,13 @@ let install (config : Map<string, string>) _ =
 
     ()
 
-let concatAndUglify (config : Map<string, string>) _ =
+let run (config : Map<string, string>) _ =
 
-    let args = "\"" + grunt + "\" --env=\"production\""
+    let env = match config.TryFind "grunt:environment" with
+              | Some x -> x
+              | _ -> "dev"
+
+    let args = "\"" + grunt + "\" --env=\"" + env + "\""
 
     let result =
         ExecProcess (fun info ->
