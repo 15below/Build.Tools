@@ -39,7 +39,7 @@ let run (config : Map<string, string>) _ =
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
-    if result <> 0 then failwith "Grunt has exited with a non-zero error level"
+    if result <> 0 then failwith (sprintf "Grunt has exited with a non-zero error level: %d" result)
 
     ()
 
@@ -53,6 +53,6 @@ let karma (config : Map<string, string>) _ =
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
-    if result <> 0 then failwith "Karma reporting failure - at least one test has failed."
+    if result <> 0 then failwith (sprintf "Karma reporting failure - at least one test has failed: %d" result)
     
     ()
