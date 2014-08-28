@@ -5,6 +5,7 @@
 #load "./Solution.fsx"
 #load "./Test.fsx"
 #load "./Specflow.fsx"
+#load "./Grunt.fsx"
 
 open System.IO
 open Fake
@@ -48,7 +49,7 @@ Target "Solution:Clean"                <| Solution.clean config
 Target "Versioning:Update"             <| Versioning.update config
 Target "Versioning:UpdateDeployNuspec" <| Versioning.updateDeploy config
 Target "Grunt:Install"                 <| Grunt.install config
-Target "Grunt:ConcatAndUglify"         <| Grunt.concatAndUglify config
+Target "Grunt:Run"                     <| Grunt.run config
 Target "Grunt:Karma"                   <| Grunt.karma config
 Target "Test:Run"                      <| Test.run config
 Target "SpecFlow:Run"                  <| Specflow.run config
