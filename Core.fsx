@@ -6,6 +6,7 @@
 #load "./Test.fsx"
 #load "./Specflow.fsx"
 #load "./Grunt.fsx"
+#load "./Octopus.fsx"
 
 open System.IO
 open Fake
