@@ -20,7 +20,7 @@ let private escapeBranchName rawName =
     safeChars.[0..(min 9 <| String.length safeChars - 1)]
 
     
-let private constructInfoVersion (config: Map<string, string>) (fileVersion: Version) file =
+let private constructInfoVersion (config: Map<string, string>) (fileVersion: Version) file branchName =
     let infoVersion = 
         Version (
             fileVersion.Major, 
@@ -30,7 +30,7 @@ let private constructInfoVersion (config: Map<string, string>) (fileVersion: Ver
     let suffix =
         match isLocalBuild with
             | true -> 
-                "-" + ((getBranchName (DirectoryName file)) |> escapeBranchName) + "-local"
+                "-" + (branchName |> escapeBranchName) + "-local"
             | _ ->
                 match config.get "versioning:branch" with
                     | "master" -> 
@@ -41,7 +41,7 @@ let private constructInfoVersion (config: Map<string, string>) (fileVersion: Ver
     infoVersion.ToString() + suffix
 
 
-let private constructVersions (config: Map<string, string>) file =
+let private constructVersions (config: Map<string, string>) file branchName =
     let fileVersion = readAssemblyVersion file
 
     let assemblyVersion = 
@@ -51,10 +51,10 @@ let private constructVersions (config: Map<string, string>) file =
             fileVersion.Build, 
             int <| config.get "versioning:build")
 
-    assemblyVersion.ToString(), (constructInfoVersion config fileVersion file)
+    assemblyVersion.ToString(), (constructInfoVersion config fileVersion file branchName)
 
-let private updateAssemblyInfo config file =
-    let versions = constructVersions config file
+let private updateAssemblyInfo config branchName file =
+    let versions = constructVersions config file branchName
 
     ReplaceAssemblyInfoVersions (fun x ->
         {
@@ -66,7 +66,7 @@ let private updateAssemblyInfo config file =
                  AssemblyInformationalVersion = snd versions
         })
 
-let private updateDeployNuspec config (file:string) =
+let private updateDeployNuspec config branchName (file:string) =
     let xdoc = new XmlDocument()
     ReadFileAsString file |> xdoc.LoadXml
     
@@ -76,18 +76,20 @@ let private updateDeployNuspec config (file:string) =
 
     let fileVersion = new Version(semVer.Major, semVer.Minor, semVer.Patch, 0)
 
-    versionNode.InnerText <- (constructInfoVersion config fileVersion file)
+    versionNode.InnerText <- (constructInfoVersion config fileVersion file branchName)
     
     WriteStringToFile false file (xdoc.OuterXml.ToString().Replace("><",">\n<"))
 
 let update config _ =
-    !+ "./**/AssemblyInfo.cs"
+    let branchName = getBranchName "."
+    !! "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
     ++ "./**/AssemblyInfo.vb"
         |> Scan
-        |> Seq.iter (updateAssemblyInfo config)
+        |> Seq.iter (updateAssemblyInfo config branchName)
 
 let updateDeploy config _ =
+    let branchName = getBranchName "."
     !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (updateDeployNuspec config)
+        |> Seq.iter (updateDeployNuspec config branchName)
