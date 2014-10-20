@@ -17,7 +17,7 @@ type PackageType =
     | NuGet
     | Paket
 
-let packageType =
+let packageType (config : Map<string, string>) =
     let rootDir =
         Directory.GetParent(config.get "core:tools").FullName()
     match File.Exists(rootDir @@ "paket.dependencies") with
