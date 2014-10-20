@@ -81,7 +81,7 @@ let private updateDeployNuspec config (file:string) =
     WriteStringToFile false file (xdoc.OuterXml.ToString().Replace("><",">\n<"))
 
 let update config _ =
-    !+ "./**/AssemblyInfo.cs"
+    !! "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
     ++ "./**/AssemblyInfo.vb"

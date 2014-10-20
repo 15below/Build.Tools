@@ -2,6 +2,7 @@
 
 open Fake
 open System
+open System.IO
 open Microsoft.FSharp.Collections
 
 let nunitRunners = @"./NUnit.Runners/tools"
@@ -11,6 +12,17 @@ let nuget = @"./nuget/nuget.exe"
 type Map<'Key,'Value when 'Key : comparison> with
     member this.get (name: 'Key) =
         this |> Map.find name
+
+type PackageType =
+    | NuGet
+    | Paket
+
+let packageType =
+    let rootDir =
+        Directory.GetParent(config.get "core:tools").FullName()
+    match File.Exists(rootDir @@ "paket.dependencies") with
+    | true -> Paket
+    | false -> NuGet
 
 let ensureNunitRunner (config : Map<string, string>) =
   if not (directoryExists <| config.get "core:tools" @@ nunitRunners) then
