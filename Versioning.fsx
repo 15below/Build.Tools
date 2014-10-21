@@ -76,7 +76,7 @@ let private updateDeployNuspec config (file:string) =
 
     let fileVersion = new Version(semVer.Major, semVer.Minor, semVer.Patch, 0)
 
-    versionNode.InnerText <- (constructInfoVersion config fileVersion file)
+    versionNode.InnerText <- (constructInfoVersion config fileVersion file branchName)
     
     WriteStringToFile false file (xdoc.OuterXml.ToString().Replace("><",">\n<"))
 
