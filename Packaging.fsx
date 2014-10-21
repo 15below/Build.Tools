@@ -12,6 +12,8 @@ open Fake
 open Utils
 
 let private nuget = @"NuGet\NuGet.exe"
+let private paketBootStrap = @"Paket\paket.bootstrapper.exe"
+let private paket = @"Paket\paket.exe"
 
 let private filterPackageable proj =
     Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
@@ -74,7 +76,7 @@ let private installPackageOptions (config: Map<string, string>) =
     else
        sprintf @"-OutputDirectory ""%s""" packagePath 
 
-let private restorePackages (config: Map<string, string>) file =
+let private restoreNuGetPackages (config: Map<string, string>) file =
     let timeOut = TimeSpan.FromMinutes 5.
     let args = sprintf @"install ""%s"" %s" file (installPackageOptions config)
     let result = ExecProcess (fun info ->
@@ -140,8 +142,24 @@ let pushPackages (config: Map<string, string>) pushto pushdir pushurl apikey nup
         pushPackagesToUrl config pushurl apikey nupkg
 
 let restore config _ =
-    !! "./**/packages.config"
-        |> Seq.iter (restorePackages config)
+    match packageType config with
+    | NuGet ->
+        !! "./**/packages.config"
+            |> Seq.iter (restoreNuGetPackages config)
+    | Paket ->
+        let result =
+            ExecProcess (fun info ->
+                    info.FileName <- config.get "core:tools" @@ paketBootStrap
+                    info.WorkingDirectory <- DirectoryName (config.get "core:tools" @@ paketBootStrap)
+                ) (TimeSpan.FromMinutes 5.)
+        if result <> 0 then failwith "Paket bootstrap failed."
+        let result =
+            ExecProcess (fun info ->
+                    info.FileName <- config.get "core:tools" @@ paket
+                    info.WorkingDirectory <- DirectoryName "."
+                    info.Arguments <- "restore") (TimeSpan.FromMinutes 5.)
+        if result <> 0 then failwith "Paket restore failed."
+        
 
 let update config _ =
     !! "./**/packages.config"
