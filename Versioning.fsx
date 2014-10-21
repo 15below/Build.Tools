@@ -81,7 +81,11 @@ let private updateDeployNuspec config branchName (file:string) =
     WriteStringToFile false file (xdoc.OuterXml.ToString().Replace("><",">\n<"))
 
 let update config _ =
-    let branchName = getBranchName "."
+    let branchName = 
+        try
+            getBranchName "."
+        with
+        | _ -> "<default>"
     !! "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
@@ -90,6 +94,10 @@ let update config _ =
         |> Seq.iter (updateAssemblyInfo config branchName)
 
 let updateDeploy config _ =
-    let branchName = getBranchName "."
+    let branchName =
+        try
+            getBranchName "."
+        with
+        | _ -> "<default>"
     !! "./**/Deploy/*.nuspec"
         |> Seq.iter (updateDeployNuspec config branchName)
