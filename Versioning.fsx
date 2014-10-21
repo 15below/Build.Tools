@@ -66,7 +66,7 @@ let private updateAssemblyInfo config branchName file =
                  AssemblyInformationalVersion = snd versions
         })
 
-let private updateDeployNuspec config (file:string) =
+let private updateDeployNuspec config branchName (file:string) =
     let xdoc = new XmlDocument()
     ReadFileAsString file |> xdoc.LoadXml
     
@@ -90,5 +90,6 @@ let update config _ =
         |> Seq.iter (updateAssemblyInfo config branchName)
 
 let updateDeploy config _ =
+    let branchName = getBranchName "."
     !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (updateDeployNuspec config)
+        |> Seq.iter (updateDeployNuspec config branchName)
