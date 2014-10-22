@@ -40,17 +40,17 @@
 <a name="what-does-it-do" class="anchor" href="#what-does-it-do"><span class="octicon octicon-link"></span></a>What does it do?</h4>
 
 <ul>
-<li>Restores NuGet dependencies</li>
-<li>Updates assembly and nuget package versions (including setting pre-release NuGet versions if you're not building from the master branch on the build server)</li>
-<li>Builds your solution</li>
-<li>Packs any nuspec files associated with project files in the repository</li>
-<li>Runs NUnit tests in dlls named *.Tests.dll (if there are any)</li>
-<li>Runs a set of SpecFlow features in a dll named *.Features.dll (if there is one)</li>
-<li>Pushes nupkg files to a NuGet server (only if running on a build server)</li>
+    <li>Restores NuGet or <a href="https://github.com/fsprojects/Paket">Paket</a> dependencies</li>
+    <li>Updates assembly and nuget package versions (including setting pre-release NuGet versions if you're not building from the master branch on the build server)</li>
+    <li>Builds your solution</li>
+    <li>Packs any nuspec files associated with project files in the repository</li>
+    <li>Runs NUnit tests in dlls named *.Tests.dll (if there are any)</li>
+    <li>Runs a set of SpecFlow features in a dll named *.Features.dll (if there is one)</li>
+    <li>Pushes nupkg files to a NuGet server (only if running on a build server)</li>
 </ul><h3>
 <a name="why-does-it-exist" class="anchor" href="#why-does-it-exist"><span class="octicon octicon-link"></span></a>Why does it exist?</h3>
 
-<p>If you're using NuGet and practice TDD, BDD or both your build workflow nearly always ends up looking very similar to the above. Rather than rewrite it again and again for every project, we decided to set up one project to rule them all, and in the darkness bind them.</p>
+<p>If you're using NuGet/Paket and practice TDD, BDD or both your build workflow nearly always ends up looking very similar to the above. Rather than rewrite it again and again for every project, we decided to set up one project to rule them all, and in the darkness bind them.</p>
 
 <p>Wait... did we say that out loud?</p>
 
