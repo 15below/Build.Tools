@@ -56,3 +56,16 @@ let karma (config : Map<string, string>) _ =
     if result <> 0 then failwith (sprintf "Karma reporting failure - at least one test has failed: %d" result)
     
     ()
+
+let protractor (config : Map<string, string>) _ =
+
+    let args = "\"" + grunt + "\" protractor"
+
+    let result =
+        ExecProcess (fun info ->
+            info.FileName <- node
+            info.WorkingDirectory <- ".\\build"
+            info.Arguments <- args) (TimeSpan.FromMinutes 20.)
+
+    if result <> 0 then failwith (sprintf "Protractor reporting failure - at least one test has failed: %d" result)
+    ()
