@@ -65,7 +65,7 @@ let protractor (config : Map<string, string>) _ =
         ExecProcess (fun info ->
             info.FileName <- node
             info.WorkingDirectory <- ".\\build"
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
+            info.Arguments <- args) (TimeSpan.FromMinutes 20.)
 
     if result <> 0 then failwith (sprintf "Protractor reporting failure - at least one test has failed: %d" result)
     ()
