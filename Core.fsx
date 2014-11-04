@@ -52,7 +52,6 @@ Target "Versioning:UpdateDeployNuspec" <| Versioning.updateDeploy config
 Target "Grunt:Install"                 <| Grunt.install config
 Target "Grunt:Run"                     <| Grunt.run config
 Target "Grunt:Karma"                   <| Grunt.karma config
-Target "Grunt:Protractor"              <| Grunt.protractor config
 Target "Test:Run"                      <| Test.run config
 Target "SpecFlow:Run"                  <| Specflow.run config
 
@@ -65,6 +64,10 @@ Target "SpecFlow:Run"                  <| Specflow.run config
     ==> "SpecFlow:Run"
     ==> "Test:Run"
     =?> ("Packaging:Push", not isLocalBuild)
+    ==> "Default"
+
+"Grunt:Install"
+    ==> "Grunt:Run"
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"
