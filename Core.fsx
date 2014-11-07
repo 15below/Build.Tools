@@ -17,6 +17,7 @@ let config =
         "build:solution",               environVar          "solution"
         "core:tools",                   environVar          "tools"
         "grunt:environment",            environVarOrDefault "gruntenvironment"      "dev"
+        "grunt:verbose",                environVarOrDefault "gruntverbose"          "false"
         "packaging:output",             environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
         "packaging:deployoutput",       environVarOrDefault "deployoutput"          (sprintf "%s\deploy" (Path.GetFullPath(".")))
         "packaging:outputsubdirs",      environVarOrDefault "outputsubdirs"         "false"
