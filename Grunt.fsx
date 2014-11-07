@@ -31,7 +31,14 @@ let run (config : Map<string, string>) _ =
               | Some x -> x
               | _ -> "dev"
 
-    let args = "\"" + grunt + "\" --env=\"" + env + "\""
+    let verbose = match config.TryFind "grunt:verbose" with
+              | Some x -> 
+                    match x with
+                    |"true" -> "--verbose" 
+                    | _ -> ""                        
+              | _ -> ""            
+
+    let args = "\"" + grunt + "\" --env=\"" + env + "\" " + verbose
 
     let result =
         ExecProcess (fun info ->
