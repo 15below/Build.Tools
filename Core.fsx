@@ -7,6 +7,7 @@
 #load "./Specflow.fsx"
 #load "./Grunt.fsx"
 #load "./Octopus.fsx"
+#load "./Docker.fsx"
 
 open System.IO
 open Fake
@@ -35,7 +36,8 @@ let config =
         "versioning:branch",            match environVar "teamcity_build_branch" with
                                             | "<default>" -> environVar "vcsroot_branch"
                                             | _ -> environVar "teamcity_build_branch"
-        "vs:version",                   environVarOrDefault "vs_version"            "11.0" ]
+        "vs:version",                   environVarOrDefault "vs_version"            "11.0" 
+        ]
 
 // Target definitions
 Target "Default"                       <| DoNothing
@@ -56,6 +58,7 @@ Target "Grunt:Karma"                   <| Grunt.karma config
 Target "Grunt:Protractor"              <| Grunt.protractor config
 Target "Test:Run"                      <| Test.run config
 Target "SpecFlow:Run"                  <| Specflow.run config
+Target "Docker:Package"                <| Docker.dockerize config
 
 // Build order
 "Solution:Clean"

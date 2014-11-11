@@ -2,3 +2,4 @@
 NUnit.Runners
 SpecFlow
 .orig
+*.swp
