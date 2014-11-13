@@ -3,3 +3,4 @@ NUnit.Runners
 SpecFlow
 .orig
 *.swp
+Paket/paket.exe
