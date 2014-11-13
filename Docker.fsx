@@ -10,6 +10,7 @@ open Utils
 let currentDir = Environment.CurrentDirectory 
 
 let run script dir =
+    tracefn "docker: running %s" script
     if File.Exists (dir @@ script) then
         sprintf "running script %s" (dir @@ script) |> trace
         ExecProcess (fun psi ->
@@ -19,7 +20,7 @@ let run script dir =
     else 0
 
 let private updateDockerFile dir =
-    trace (sprintf "updating docker file in directory: %s" dir)
+    tracefn "docker: updating docker file in directory: %s" dir
     let dockerFile = dir @@ "Dockerfile"
     let dockerFileOrig = dir @@ "Dockerfile.orig"
     File.Copy(dockerFile, dockerFileOrig)
@@ -32,12 +33,18 @@ let private updateDockerFile dir =
 let private buildImage (config: Map<string, string>) name dir =
     updateDockerFile dir
     let pre = run "pre.sh" dir
+    tracefn "docker: running Dockerfile in: %s" dir
     let result = ExecProcess (fun psi ->
                     psi.FileName <- "docker"
                     psi.Arguments <- sprintf "build -t %s:%s %s" name (config.get "versioning:build") dir
                     psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
+    tracefn "docker: tagging with latest: %s" dir
+    let tag = ExecProcess (fun psi ->
+                    psi.FileName <- "docker"
+                    psi.Arguments <- sprintf "tag %s:%s %s:latest" name (config.get "versioning:build") name
+                    psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
     let post = run "post.sh" dir
-    result + pre + post
+    result + tag + pre + post
 
 
 let dockerize (config: Map<string, string>) _ =
