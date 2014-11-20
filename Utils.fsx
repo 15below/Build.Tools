@@ -1,4 +1,4 @@
-#r    "./fake/fakelib.dll"
+#r    "./Fake/FakeLib.dll"
 
 open Fake
 open System

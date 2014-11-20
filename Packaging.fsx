@@ -1,4 +1,4 @@
-#r "./fake/fakelib.dll"
+#r "./Fake/FakeLib.dll"
 #r "System.Xml.Linq.dll"
 #r "System.IO.Compression.dll"
 #load "./Utils.fsx"
