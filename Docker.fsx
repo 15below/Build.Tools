@@ -23,15 +23,19 @@ let private updateDockerFile dir =
     tracefn "docker: updating docker file in directory: %s" dir
     let dockerFile = dir @@ "Dockerfile"
     let dockerFileOrig = dir @@ "Dockerfile.orig"
+    if File.Exists(dockerFileOrig) then
+        File.Delete dockerFileOrig
     File.Copy(dockerFile, dockerFileOrig)
-    let file = File.ReadAllText (dir @@ "Dockerfile")
+    let file = File.ReadAllText (dockerFile)
     file.Replace(@"[[HACK]]", string DateTime.Now.Ticks)
-    |> fun s -> File.WriteAllText(dir @@ "Dockerfile", s)
-    File.Delete(dockerFile)
-    File.Move(dockerFileOrig, dockerFile)
+    |> fun s -> File.WriteAllText(dockerFile, s)
+    { new IDisposable with
+        member x.Dispose() =
+            File.Delete(dockerFile)
+            File.Move(dockerFileOrig, dockerFile) }
 
 let private buildImage (config: Map<string, string>) name dir =
-    updateDockerFile dir
+    use x = updateDockerFile dir
     let pre = run "pre.sh" dir
     tracefn "docker: running Dockerfile in: %s" dir
     let image = sprintf "%s/%s:%s" (config.get "docker:registry") name (config.get "versioning:build")
