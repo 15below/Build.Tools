@@ -44,17 +44,24 @@ let private buildImage (config: Map<string, string>) name dir =
                     psi.Arguments <- sprintf "build -t %s %s" image dir
                     psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
     tracefn "docker: tagging with latest: %s" dir
+    let latest = sprintf "tag %s/%s:%s %s:latest" (config.get "docker:registry") name (config.get "versioning:build") name
     let tag = ExecProcess (fun psi ->
                     psi.FileName <- "docker"
-                    psi.Arguments <- sprintf "tag %s/%s:%s %s:latest" (config.get "docker:registry") name (config.get "versioning:build") name
+                    psi.Arguments <- latest
                     psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
     let push =
         if config.ContainsKey "docker:registry"  then
             tracefn "docker: pushing: %s" image
-            ExecProcess (fun psi ->
-                psi.FileName <- "docker"
-                psi.Arguments <- sprintf "push %s" image
-                psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
+            let res = ExecProcess (fun psi ->
+				psi.FileName <- "docker"
+				psi.Arguments <- sprintf "push %s" image
+				psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
+            tracefn "docker: pushing: %s" image
+            let res2 = ExecProcess (fun psi ->
+				psi.FileName <- "docker"
+				psi.Arguments <- sprintf "push %s" latest
+				psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
+            res + res2
         else 
             trace "docker: config key [docker:registry] not found. skipping docker push"
             0
