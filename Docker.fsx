@@ -44,7 +44,8 @@ let private buildImage (config: Map<string, string>) name dir =
                     psi.Arguments <- sprintf "build -t %s %s" image dir
                     psi.WorkingDirectory <- dir) (TimeSpan.FromHours 1.0)
     tracefn "docker: tagging with latest: %s" dir
-    let latest = sprintf "tag %s/%s:%s %s:latest" (config.get "docker:registry") name (config.get "versioning:build") name
+    let registry = (config.get "docker:registry")
+    let latest = sprintf "tag %s/%s:%s %s/%s:latest" registry name (config.get "versioning:build") registry name
     let tag = ExecProcess (fun psi ->
                     psi.FileName <- "docker"
                     psi.Arguments <- latest
