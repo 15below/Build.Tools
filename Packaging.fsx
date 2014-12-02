@@ -1,4 +1,4 @@
-#r "./fake/fakelib.dll"
+#r "./Fake/FakeLib.dll"
 #r "System.Xml.Linq.dll"
 #r "System.IO.Compression.dll"
 #load "./Utils.fsx"
@@ -11,9 +11,9 @@ open System.Xml.Linq
 open Fake
 open Utils
 
-let private nuget = @"NuGet\NuGet.exe"
-let private paketBootStrap = @"Paket\paket.bootstrapper.exe"
-let private paket = @"Paket\paket.exe"
+let private nuget = "NuGet" @@ "NuGet.exe"
+let private paketBootStrap = "Paket" @@ "paket.bootstrapper.exe"
+let private paket = "Paket" @@ "paket.exe" 
 
 let private filterPackageable proj =
     Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
@@ -26,7 +26,7 @@ let private filterPackageable proj =
 let private packageProject (config: Map<string, string>) outputDir proj =
 
     let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
-                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | Some "true" -> outputDir @@ Path.GetFileNameWithoutExtension(proj)
                         | _ -> outputDir
 
     Directory.CreateDirectory(outputDirFull) |> ignore
@@ -40,7 +40,7 @@ let private packageProject (config: Map<string, string>) outputDir proj =
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
+            info.FileName <- Environment.CurrentDirectory @@ config.get "core:tools" @@ nuget
             info.WorkingDirectory <- DirectoryName proj
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
     
@@ -49,7 +49,7 @@ let private packageProject (config: Map<string, string>) outputDir proj =
 let private packageDeployment (config: Map<string, string>) outputDir proj =
 
     let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
-                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                        | Some "true" -> outputDir @@ Path.GetFileNameWithoutExtension(proj)
                         | _ -> outputDir
 
     Directory.CreateDirectory(outputDirFull) |> ignore
@@ -63,7 +63,7 @@ let private packageDeployment (config: Map<string, string>) outputDir proj =
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
+            info.FileName <- Environment.CurrentDirectory @@ config.get "core:tools" @@ nuget
             info.WorkingDirectory <- DirectoryName proj
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
     
@@ -80,7 +80,7 @@ let private restoreNuGetPackages (config: Map<string, string>) file =
     let timeOut = TimeSpan.FromMinutes 5.
     let args = sprintf @"install ""%s"" %s" file (installPackageOptions config)
     let result = ExecProcess (fun info ->
-                        info.FileName <- config.get "core:tools" @@ nuget
+                        info.FileName <- Environment.CurrentDirectory @@ config.get "core:tools" @@ nuget
                         info.WorkingDirectory <- Path.GetFullPath(".")
                         info.Arguments <- args) timeOut
     if result <> 0 then failwithf "Error during Nuget update. %s %s" (config.get "core:tools" @@ nuget) args
@@ -96,7 +96,7 @@ let private updatePackages (config: Map<string, string>) file =
                     (if isNotNullOrEmpty specificId then sprintf " -Id \"%s\"" specificId else "")
             let result =
                 ExecProcess (fun info ->
-                    info.FileName <- config.get "core:tools" @@ nuget
+                    info.FileName <- Environment.CurrentDirectory @@ config.get "core:tools" @@ nuget
                     info.WorkingDirectory <- DirectoryName file
                     info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
@@ -124,7 +124,7 @@ let private pushPackagesToUrl (config: Map<string, string>) pushurl apikey nupkg
             pushurl
     let result =
         ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
+            info.FileName <- Environment.CurrentDirectory @@ config.get "core:tools" @@ nuget
             info.WorkingDirectory <- DirectoryName nupkg
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
@@ -142,6 +142,7 @@ let pushPackages (config: Map<string, string>) pushto pushdir pushurl apikey nup
         pushPackagesToUrl config pushurl apikey nupkg
 
 let restore config _ =
+    let curDir = System.Environment.CurrentDirectory
     match packageType config with
     | NuGet ->
         !! "./**/packages.config"
@@ -149,13 +150,13 @@ let restore config _ =
     | Paket ->
         let result =
             ExecProcess (fun info ->
-                    info.FileName <- config.get "core:tools" @@ paketBootStrap
+                    info.FileName <- curDir @@ config.get "core:tools" @@ paketBootStrap
                     info.WorkingDirectory <- DirectoryName (config.get "core:tools" @@ paketBootStrap)
                 ) (TimeSpan.FromMinutes 5.)
         if result <> 0 then failwith "Paket bootstrap failed."
         let result =
             ExecProcess (fun info ->
-                    info.FileName <- config.get "core:tools" @@ paket
+                    info.FileName <- curDir @@ config.get "core:tools" @@ paket
                     info.WorkingDirectory <- DirectoryName "."
                     info.Arguments <- "restore") (TimeSpan.FromMinutes 5.)
         if result <> 0 then failwith "Paket restore failed."
