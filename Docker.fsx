@@ -36,7 +36,7 @@ let private buildImage (config: Map<string, string>) name dir =
     let registry = (config.get "docker:registry")
     let latest = sprintf "%s/%s:latest" registry name
     execProcess "docker" (sprintf "tag %s/%s:%s %s" registry name (config.get "versioning:build") latest) dir
-    if config.ContainsKey "docker:registry"  then
+    if config.ContainsKey "docker:registry" && not isLocalBuild then
         tracefn "docker: pushing: %s" image
         execProcess "docker" (sprintf "push %s" image) dir
         tracefn "docker: pushing: %s" image
