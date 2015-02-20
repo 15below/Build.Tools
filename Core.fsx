@@ -67,8 +67,7 @@ Target "Docker:Package"                <| Docker.dockerize config
     ==> "Packaging:Package"
     ==> "SpecFlow:Run"
     ==> "Test:Run"
-    ==> "Packaging:Push"
-    //=?> ("Packaging:Push", not isLocalBuild)
+    =?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"
