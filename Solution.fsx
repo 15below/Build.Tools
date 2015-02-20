@@ -19,7 +19,6 @@ let private runCompiler target (config: Map<string, string>) =
             MaxCpuCount = Some <| Some Environment.ProcessorCount }
     build setParams (config.get "build:solution")
 
-
 let build (config: Map<string, string>) _ =
     runCompiler "Build" config
 

@@ -40,11 +40,11 @@ let config =
 
 // Target definitions
 Target "Default"                       <| DoNothing
-// Target "Packaging:Package"             <| Packaging.package config
+Target "Packaging:Package"             <| Packaging.package config
 // Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
 Target "Packaging:Restore"             <| Packaging.restore config
 // Target "Packaging:Update"              <| Packaging.update config
-// Target "Packaging:Push"                <| Packaging.push config
+Target "Packaging:Push"                <| Packaging.push config
 // Target "Packaging:Constrain"           <| Packaging.constrain config
 // Target "Packaging:PushDeploy"          <| Packaging.pushDeploy config
 Target "Solution:Build"                <| Solution.build config
@@ -64,10 +64,11 @@ Target "Docker:Package"                <| Docker.dockerize config
     ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
-    // ==> "Packaging:Package"
+    ==> "Packaging:Package"
     ==> "SpecFlow:Run"
     ==> "Test:Run"
-    // =?> ("Packaging:Push", not isLocalBuild)
+    ==> "Packaging:Push"
+    //=?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"

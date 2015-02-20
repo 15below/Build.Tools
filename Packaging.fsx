@@ -43,3 +43,96 @@ let CleanDirOnce dir =
         cleanDirOnceHistory.Add(dir)
         CleanDir dir
 
+
+/// Paket parameter type
+type PaketPackParams = 
+    { ToolPath : string
+      TimeOut : TimeSpan
+      Version : string
+      Authors : string list
+      Project : string
+      Title : string
+      Summary : string
+      Description : string
+      Tags : string
+      ReleaseNotes : string
+      Copyright : string
+      OutputPath : string }
+
+/// Paket pack default parameters  
+let PaketPackDefaults() : PaketPackParams = 
+    { ToolPath = findToolFolderInSubPath "paket.exe" (currentDirectory @@ ".paket" @@ "paket.exe")
+      TimeOut = TimeSpan.FromMinutes 5.
+      Version = 
+          if not isLocalBuild then buildVersion
+          else "0.1.0.0"
+      Authors = []
+      Project = ""
+      Title = ""
+      Summary = null
+      Description = null
+      Tags = null
+      ReleaseNotes = null
+      Copyright = null
+      OutputPath = "./temp" }
+
+/// Creates a new NuGet package by using Paket pack on all paket.template files in the given root directory.
+/// ## Parameters
+/// 
+///  - `setParams` - Function used to manipulate the default parameters.
+///  - `rootDir` - The paket.template files.
+let PaketPack setParams rootDir = 
+    traceStartTask "PaketPack" rootDir
+    let parameters : PaketPackParams = PaketPackDefaults() |> setParams
+
+    let packResult =
+        ExecProcess (fun info ->
+            info.FileName <- parameters.ToolPath @@ "paket.exe"
+            info.Arguments <- sprintf "pack output %s" parameters.OutputPath) parameters.TimeOut
+
+    if packResult <> 0 then failwithf "Error during packing %s." rootDir
+
+    traceEndTask "PaketPack" rootDir
+
+
+/// Paket parameter type
+type PaketPushParams = 
+    { ToolPath : string
+      TimeOut : TimeSpan
+      PublishUrl : string
+      AccessKey : string }
+
+/// Paket push default parameters
+let PaketPushDefaults() : PaketPushParams = 
+    { ToolPath = findToolFolderInSubPath "paket.exe" (currentDirectory @@ ".paket" @@ "paket.exe")
+      TimeOut = TimeSpan.FromMinutes 5.
+      PublishUrl = "https://nuget.org"
+      AccessKey = null }
+
+/// Pushes a NuGet package to the server by using Paket push.
+/// ## Parameters
+/// 
+///  - `setParams` - Function used to manipulate the default parameters.
+///  - `packages` - The .nupkg files.
+let PaketPush setParams packages =
+    let packages = Seq.toList packages
+    traceStartTask "PaketPush" (separated ", " packages)
+    let parameters : PaketPushParams = PaketPushDefaults() |> setParams
+
+    for package in packages do
+        let pushResult =
+            ExecProcess (fun info ->
+                info.FileName <- parameters.ToolPath @@ "paket.exe"
+                info.Arguments <- sprintf "push url %s file %s" parameters.PublishUrl package) System.TimeSpan.MaxValue
+        if pushResult <> 0 then failwithf "Error during pushing %s." package
+
+    traceEndTask "PaketPush" (separated ", " packages)
+
+let package config _ =
+    PaketPack (fun p -> { p  with OutputPath = Map.find "packaging:output" config }) "."
+
+let push config _ =
+    trace "do we get here?"
+    setEnvironVar "NugetApiKey" (Map.find "packaging:apikey" config)
+    !! ((Map.find "packaging:output" config) @@ "*.nupkg")
+    |> PaketPush (fun p -> { p with PublishUrl = Map.find "packaging:pushurl" config })
