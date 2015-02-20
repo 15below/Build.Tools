@@ -1,4 +1,4 @@
-#r "./Fake/FakeLib.dll"
+#r    @"../../../packages/FAKE/tools/fakelib.dll"
 #load "./Utils.fsx"
 
 open Fake
@@ -31,12 +31,13 @@ let run (config : Map<string, string>) _ =
               | Some x -> x
               | _ -> "dev"
 
-    let verbose = match config.TryFind "grunt:verbose" with
-              | Some x -> 
-                    match x with
-                    |"true" -> "--verbose" 
-                    | _ -> ""                        
-              | _ -> ""            
+    let verbose = 
+        match config.TryFind "grunt:verbose" with
+        | Some x -> 
+              match x with
+              |"true" -> "--verbose" 
+              | _ -> ""                        
+        | _ -> ""            
 
     let args = "\"" + grunt + "\" --env=\"" + env + "\" " + verbose
 

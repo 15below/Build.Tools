@@ -1,4 +1,4 @@
-#r "./Fake/FakeLib.dll"
+#r    @"../../../packages/FAKE/tools/fakelib.dll"
 #load "./Utils.fsx"
 
 open System

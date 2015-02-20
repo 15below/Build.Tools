@@ -1,4 +1,4 @@
-#r "./Fake/FakeLib.dll"
+#r    @"../../../packages/FAKE/tools/fakelib.dll"
 #load "./Utils.fsx"
 
 open Fake
@@ -29,13 +29,6 @@ let run (config : Map<string, string>) _ =
     
     let testDlls = !! (sprintf @".\**\bin\%s\**\*.Features.dll" (config.get "build:configuration"))
     if Seq.length testDlls > 0 then
-        match packageType config with
-        | NuGet ->
-            ensureNunitRunner config
-            ensureSpecFlowRunner config
-        | Paket ->
-            ()
-
         testDlls
         |> NUnit 
             (fun defaults ->

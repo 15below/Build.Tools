@@ -1,4 +1,4 @@
-#r    "./fake/fakelib.dll"
+#r    @"../../../packages/FAKE/tools/fakelib.dll"
 #load "./Utils.fsx"
 #load "./Packaging.fsx"
 #load "./Versioning.fsx"
@@ -16,7 +16,6 @@ let config =
     Map.ofList [
         "build:configuration",          environVarOrDefault "configuration"         "Release"
         "build:solution",               environVar          "solution"
-        "core:tools",                   environVar          "tools"
         "grunt:environment",            environVarOrDefault "gruntenvironment"      "dev"
         "grunt:verbose",                environVarOrDefault "gruntverbose"          "false"
         "packaging:output",             environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))
@@ -41,13 +40,13 @@ let config =
 
 // Target definitions
 Target "Default"                       <| DoNothing
-Target "Packaging:Package"             <| Packaging.package config
-Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
+// Target "Packaging:Package"             <| Packaging.package config
+// Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
 Target "Packaging:Restore"             <| Packaging.restore config
-Target "Packaging:Update"              <| Packaging.update config
-Target "Packaging:Push"                <| Packaging.push config
-Target "Packaging:Constrain"           <| Packaging.constrain config
-Target "Packaging:PushDeploy"          <| Packaging.pushDeploy config
+// Target "Packaging:Update"              <| Packaging.update config
+// Target "Packaging:Push"                <| Packaging.push config
+// Target "Packaging:Constrain"           <| Packaging.constrain config
+// Target "Packaging:PushDeploy"          <| Packaging.pushDeploy config
 Target "Solution:Build"                <| Solution.build config
 Target "Solution:Clean"                <| Solution.clean config
 Target "Versioning:Update"             <| Versioning.update config
@@ -65,10 +64,10 @@ Target "Docker:Package"                <| Docker.dockerize config
     ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
-    ==> "Packaging:Package"
+    // ==> "Packaging:Package"
     ==> "SpecFlow:Run"
     ==> "Test:Run"
-    =?> ("Packaging:Push", not isLocalBuild)
+    // =?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
 
 RunParameterTargetOrDefault "target" "Default"
