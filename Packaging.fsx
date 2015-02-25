@@ -39,4 +39,5 @@ let push config _ =
     setEnvironVar "nugetkey" (Map.find "packaging:apikey" config)
     Paket.Push (fun p -> { p with
                                 PublishUrl = Map.find "packaging:pushurl" config
+                                EndPoint   = Map.find "packaging:pushendpoint" config
                                 WorkingDir = Map.find "packaging:output" config })

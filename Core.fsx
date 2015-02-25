@@ -25,6 +25,7 @@ let config =
         "packaging:pushto",             environVarOrDefault "pushto"                ""
         "packaging:pushdir",            environVarOrDefault "pushdir"               ""
         "packaging:pushurl",            environVarOrDefault "pushurl"               ""
+        "packaging:pushendpoint",       environVarOrDefault "pushendpoint"          "/api/v2/package"
         "packaging:apikey",             environVarOrDefault "apikey"                ""
         "packaging:deploypushto",       environVarOrDefault "deploypushto"          ""
         "packaging:deploypushdir",      environVarOrDefault "deploypushdir"         ""
