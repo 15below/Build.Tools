@@ -42,7 +42,6 @@ let config =
 Target "Default"                       <| DoNothing
 Target "Packaging:Package"             <| Packaging.package config
 // Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
-Target "Packaging:Restore"             <| Packaging.restore config
 // Target "Packaging:Update"              <| Packaging.update config
 Target "Packaging:Push"                <| Packaging.push config
 // Target "Packaging:Constrain"           <| Packaging.constrain config
@@ -61,7 +60,6 @@ Target "Docker:Package"                <| Docker.dockerize config
 
 // Build order
 "Solution:Clean"
-    ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
     ==> "Packaging:Package"
