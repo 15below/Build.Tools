@@ -25,6 +25,7 @@ let config =
         "packaging:pushto",             environVarOrDefault "pushto"                ""
         "packaging:pushdir",            environVarOrDefault "pushdir"               ""
         "packaging:pushurl",            environVarOrDefault "pushurl"               ""
+        "packaging:pushendpoint",       environVarOrDefault "pushendpoint"          "/api/v2/package"
         "packaging:apikey",             environVarOrDefault "apikey"                ""
         "packaging:deploypushto",       environVarOrDefault "deploypushto"          ""
         "packaging:deploypushdir",      environVarOrDefault "deploypushdir"         ""
@@ -42,7 +43,6 @@ let config =
 Target "Default"                       <| DoNothing
 Target "Packaging:Package"             <| Packaging.package config
 // Target "Packaging:PackageDeploy"       <| Packaging.packageDeploy config
-Target "Packaging:Restore"             <| Packaging.restore config
 // Target "Packaging:Update"              <| Packaging.update config
 Target "Packaging:Push"                <| Packaging.push config
 // Target "Packaging:Constrain"           <| Packaging.constrain config
@@ -61,7 +61,6 @@ Target "Docker:Package"                <| Docker.dockerize config
 
 // Build order
 "Solution:Clean"
-    ==> "Packaging:Restore"
     ==> "Versioning:Update"
     ==> "Solution:Build"
     ==> "Packaging:Package"

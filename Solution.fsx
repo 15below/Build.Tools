@@ -10,12 +10,12 @@ let private runCompiler target (config: Map<string, string>) =
         { defaults with
             Verbosity = Some(Quiet)
             Targets = [target]
-            Properties =
-                [
-                    "Optimize", "True"
-                    "DebugSymbols", "True"
-                    "Configuration", config.get "build:configuration"
-                ]
+            Properties = [ "Optimize", "True"
+                           "DebugSymbols", "True"
+                           "Configuration", config.get "build:configuration"
+                           "DeployTarget","Package"
+                           "DeployOnBuild","True"
+                           "CreatePackageOnPublish","True" ]
             MaxCpuCount = Some <| Some Environment.ProcessorCount }
     build setParams (config.get "build:solution")
 
