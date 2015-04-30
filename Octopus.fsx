@@ -1,4 +1,4 @@
-#r    @"../../../packages/FAKE/tools/fakelib.dll"
+#r    @"../../../packages/FAKE/tools/FakeLib.dll"
 
 open Fake
 open Fake.OctoTools

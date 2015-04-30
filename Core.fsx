@@ -1,4 +1,4 @@
-#r    @"../../../packages/FAKE/tools/fakelib.dll"
+#r    @"../../../packages/FAKE/tools/FakeLib.dll"
 #load "./Utils.fsx"
 #load "./Packaging.fsx"
 #load "./Versioning.fsx"
