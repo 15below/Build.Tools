@@ -63,8 +63,8 @@ Target "Docker:Package"                <| Docker.dockerize config
 "Solution:Clean"
     ==> "Versioning:Update"
     ==> "Solution:Build"
-    ==> "Packaging:Package"
     ==> "SpecFlow:Run"
+    ==> "Packaging:Package"
     ==> "Test:Run"
     =?> ("Packaging:Push", not isLocalBuild)
     ==> "Default"
