@@ -45,27 +45,30 @@ let private packageProject (config: Map<string, string>) outputDir proj =
     if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
 
 let private packageDeployment (config: Map<string, string>) outputDir proj =
+    async {
+        let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
+                            | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
+                            | _ -> outputDir
 
-    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
-                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
-                        | _ -> outputDir
+        Directory.CreateDirectory(outputDirFull) |> ignore
 
-    Directory.CreateDirectory(outputDirFull) |> ignore
-
-    let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s -NoPackageAnalysis" 
-            proj
-            outputDirFull
-            (config.get "build:configuration")
-            (config.get "vs:version")
-
-    let result =
-        ExecProcess (fun info ->
-            info.FileName <- FileSystem.findToolInSubPath "NuGet.exe" currentDirectory
-            info.WorkingDirectory <- DirectoryName proj
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
-    
-    if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
+        let args =
+            sprintf "pack \"%s\" -OutputDirectory \"%s\" -Properties Configuration=%s;VisualStudioVersion=%s -NoPackageAnalysis" 
+                proj
+                outputDirFull
+                (config.get "build:configuration")
+                (config.get "vs:version")
+         
+        let! result = 
+            asyncShellExec { ExecParams.Program = findToolInSubPath "NuGet.exe" currentDirectory
+                             WorkingDirectory = DirectoryName proj
+                             CommandLine = args
+                             Args = [] }
+        
+        if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
+        
+        return result
+    }
 
 let private installPackageOptions (config: Map<string, string>) =
     let packagePath = (config.get "packaging:packages")
@@ -140,7 +143,10 @@ let package (config : Map<string, string>) _ =
     CleanDirOnce (config.get "packaging:deployoutput")
 
     !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (packageDeployment config (config.get "packaging:deployoutput"))
+        |> Seq.map (packageDeployment config (config.get "packaging:deployoutput"))
+        |> Async.Parallel
+        |> Async.Ignore
+        |> Async.RunSynchronously
 
 let push (config : Map<string, string>) _ =
     let pushto = config.TryFind "packaging:deploypushto"
