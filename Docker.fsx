@@ -28,6 +28,13 @@ let private execProcess fileName args wd =
         failwith (sprintf "ExecProcess failed (code: %i) for %s %s" result fileName args)
        
 let private buildImage (config: Map<string, string>) name dir =
+    //append the pull request branch name if available
+    //else we may pollute the main docker repo for this with PR builds
+    //This effectively creates a unique docker repository for each PR
+    let name =
+        if isPullRequest config then
+            sprintf "%s_%s" name (config.get "versioning:branch")
+        else name
     run "pre.sh" dir
     tracefn "docker: running Dockerfile in: %s" dir
     let image = sprintf "%s/%s:%s" (config.get "docker:registry") name (config.get "versioning:build")
