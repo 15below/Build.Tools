@@ -28,31 +28,38 @@ let private execProcess fileName args wd =
         failwith (sprintf "ExecProcess failed (code: %i) for %s %s" result fileName args)
        
 let private buildImage (config: Map<string, string>) name dir =
-    //append the pull request branch name if available
-    //else we may pollute the main docker repo for this with PR builds
-    //This effectively creates a unique docker repository for each PR
-    let name =
-        if isPullRequest config then
-            sprintf "%s_%s" name (config.get "versioning:branch")
-        else name
+
+    //only push if registry is configued and it is a non PR non local build
+    let shouldPush = config.ContainsKey "docker:registry" && not isLocalBuild && not (isPullRequest config)
+    //run preprocessing script
     run "pre.sh" dir
+
+    //build the docker container
     tracefn "docker: running Dockerfile in: %s" dir
     let image = sprintf "%s/%s:%s" (config.get "docker:registry") name (config.get "versioning:build")
     execProcess "docker" (sprintf "build -t %s %s" image dir) dir
+
+    //tag the generated docker container as latest
     tracefn "docker: tagging with latest: %s" dir
     let registry = (config.get "docker:registry")
     let latest = sprintf "%s/%s:latest" registry name
     execProcess "docker" (sprintf "tag %s/%s:%s %s" registry name (config.get "versioning:build") latest) dir
-    if config.ContainsKey "docker:registry" && not isLocalBuild then
+
+    //push
+    if shouldPush then
         tracefn "docker: pushing: %s" image
         execProcess "docker" (sprintf "push %s" image) dir
         tracefn "docker: pushing: %s" image
         execProcess "docker" (sprintf "push %s" latest) dir
     else 
         trace "docker: config key [docker:registry] not found. skipping docker push"
+    //post processing
     run "post.sh" dir
 
-
+///creates docker containers for all configurations in the docker directory
+///if a docker registry is configured and this is not a local build or a build
+///from a pull request branch then the containers will be tagged and pushed to the 
+///configured registry
 let dockerize (config: Map<string, string>) _ =
     Directory.EnumerateDirectories (currentDir @@ "docker")
     |> Seq.map (fun d -> d, DirectoryInfo(d).Name)
