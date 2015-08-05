@@ -27,3 +27,16 @@ let run (config : Map<string, string>) _ =
     if result <> 0 then failwith (sprintf "Gulp has exited with a non-zero error code: %d" result)
 
     ()
+
+let target (config : Map<string, string>) name _ =
+    let args = "\"" + gulp + "\" " + name
+
+    let result =
+        ExecProcess(fun info ->
+            info.FileName <- Npm.node
+            info.WorkingDirectory <- ".\\build"
+            info.Arguments <- args) (TimeSpan.FromMinutes 15.)
+
+    if result <> 0 then failwith (sprintf "Gulp has exited with a non-zero error code: %d" result)
+
+    ()
