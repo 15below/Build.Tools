@@ -27,7 +27,7 @@ let packageType (config : Map<string, string>) =
 let ensureNunitRunner (config : Map<string, string>) =
   if not (directoryExists <| config.get "core:tools" @@ nunitRunners) then
      let args =
-         sprintf "install NUnit.Runners -ExcludeVersion -OutputDirectory \"%s\""
+         sprintf "install NUnit.Runners -ExcludeVersion -Version 2.6.4 -OutputDirectory \"%s\""
              (config.get "core:tools")
      let result =
          ExecProcess (fun info ->
