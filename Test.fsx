@@ -13,4 +13,4 @@ let run (config : Map<string, string>) _ =
         | Paket -> ()
 
         testDlls
-        |> NUnit id
+        |> NUnit (fun p -> { p with ToolPath = (config |> Map.find "core:tools") @@ "NUnit.Runners" @@ "tools" })
