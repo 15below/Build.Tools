@@ -12,5 +12,8 @@ let run (config : Map<string, string>) _ =
         | NuGet -> ensureNunitRunner config
         | Paket -> ()
 
+        let x = (config |> Map.find "core:tools") @@ "NUnit.Runners" @@ "tools"
+        printfn "ToolPath = %s" x
+
         testDlls
-        |> NUnit (fun p -> { p with ToolPath = (config |> Map.find "core:tools") @@ "NUnit.Runners" @@ "tools" })
+        |> NUnit (fun p -> { p with ToolPath = x })
