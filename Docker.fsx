@@ -29,8 +29,14 @@ let private execProcess fileName args wd =
        
 let private buildImage (config: Map<string, string>) name dir =
 
-    //only push if registry is configued and it is a non PR non local build
-    let shouldPush = config.ContainsKey "docker:registry" && not isLocalBuild && not (isPullRequest config)
+    let name =
+        if isPullRequest config then
+            tracefn "docker: pull request build - changing name to %s-pull" name
+            sprintf "%s-pull" name
+        else name
+    //only push if registry is configued 
+    let shouldPush = config.ContainsKey "docker:registry" && not isLocalBuild
+
     //run preprocessing script
     run "pre.sh" dir
 
@@ -52,7 +58,7 @@ let private buildImage (config: Map<string, string>) name dir =
         tracefn "docker: pushing: %s" image
         execProcess "docker" (sprintf "push %s" latest) dir
     else 
-        trace "docker: config key [docker:registry] not found. skipping docker push"
+        trace "docker: shouldPush is false. skipping docker push"
     //post processing
     run "post.sh" dir
 
