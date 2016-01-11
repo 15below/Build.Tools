@@ -36,8 +36,7 @@ let private buildImage (config: Map<string, string>) name dir =
         else name
     //only push if registry is configued 
     let shouldPush = config.ContainsKey "docker:registry" && not isLocalBuild
-    if not shouldPush then
-        tracefn "docker: shouldPush is false. isLocalBuild is %O" isLocalBuild
+
     //run preprocessing script
     run "pre.sh" dir
 
@@ -59,7 +58,7 @@ let private buildImage (config: Map<string, string>) name dir =
         tracefn "docker: pushing: %s" image
         execProcess "docker" (sprintf "push %s" latest) dir
     else 
-        trace "docker: config key [docker:registry] not found. skipping docker push"
+        trace "docker: shouldPush is false. skipping docker push"
     //post processing
     run "post.sh" dir
 
