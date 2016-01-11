@@ -1,29 +1,16 @@
 #r    @"../../../packages/FAKE/tools/FakeLib.dll"
 #load "./Utils.fsx"
+#load "./Npm.fsx"
 
 open Fake
 open Utils
+open Npm
 open System
 open System.IO
 
-let nodeDir64 = "C:\\Program Files\\nodejs\\"
-let nodeDir86 = "C:\\Program Files (x86)\\nodejs\\"
-let nodeDir = match Directory.Exists nodeDir64 with | true -> nodeDir64 | _ -> nodeDir86
-let node = Path.Combine(nodeDir, "node.exe")
-let npm = Path.Combine(nodeDir, "npm.cmd")
 let grunt = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm\\node_modules\\grunt-cli\\bin\\grunt")
 
-let install (config : Map<string, string>) _ =
-
-    let args = "install"
-
-    let result =
-        ExecProcess (fun info ->
-            info.FileName <- npm
-            info.WorkingDirectory <- ".\\build"
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
-
-    ()
+let install = Npm.install
 
 let run (config : Map<string, string>) _ =
 
@@ -31,19 +18,19 @@ let run (config : Map<string, string>) _ =
               | Some x -> x
               | _ -> "dev"
 
-    let verbose = 
+    let verbose =
         match config.TryFind "grunt:verbose" with
-        | Some x -> 
+        | Some x ->
               match x with
-              |"true" -> "--verbose" 
-              | _ -> ""                        
-        | _ -> ""            
+              |"true" -> "--verbose"
+              | _ -> ""
+        | _ -> ""
 
     let args = "\"" + grunt + "\" --env=\"" + env + "\" " + verbose
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- node
+            info.FileName <- Npm.node
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
@@ -57,12 +44,12 @@ let karma (config : Map<string, string>) _ =
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- node
+            info.FileName <- Npm.node
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
     if result <> 0 then failwith (sprintf "Karma reporting failure - at least one test has failed: %d" result)
-    
+
     ()
 
 let protractor (config : Map<string, string>) _ =
@@ -71,7 +58,7 @@ let protractor (config : Map<string, string>) _ =
 
     let result =
         ExecProcess (fun info ->
-            info.FileName <- node
+            info.FileName <- Npm.node
             info.WorkingDirectory <- ".\\build"
             info.Arguments <- args) (TimeSpan.FromMinutes 20.)
 
