@@ -31,10 +31,13 @@ let private buildImage (config: Map<string, string>) name dir =
 
     let name =
         if isPullRequest config then
+            tracefn "docker: pull request build - changing name to %s-pull" name
             sprintf "%s-pull" name
         else name
     //only push if registry is configued 
     let shouldPush = config.ContainsKey "docker:registry" && not isLocalBuild
+    if not shouldPush then
+        tracefn "docker: shouldPush is false. isLocalBuild is %O" isLocalBuild
     //run preprocessing script
     run "pre.sh" dir
 
