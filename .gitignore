@@ -1,7 +1,7 @@
 .DS_*
 NUnit.Runners
 SpecFlow
-.orig
+*.orig
 *.swp
 *.swo
 Paket/paket.exe
