@@ -12,4 +12,9 @@ type Map<'Key,'Value when 'Key : comparison> with
 
 
 let isPullRequest (config : Map<string, string>) =
-    Regex.IsMatch (config.get "versioning:branch", config.get "utils:pullrequestbranchspec")
+    match config.get "versioning:branch", config.get "utils:pullrequestbranchspec" with
+    | null, null
+    | null, _
+    | _, null -> false
+    | branch, spec ->
+        Regex.IsMatch (branch, spec)
