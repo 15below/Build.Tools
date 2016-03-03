@@ -33,7 +33,8 @@ let private constructInfoVersion (config: Map<string, string>) (fileVersion: Ver
                 "-" + (branchName |> escapeBranchName) + "-local"
             | _ ->
                 match config.get "versioning:branch" with
-                    | "master" -> 
+                    | "master"
+                    | "hotfix" ->
                         "." + config.get "versioning:build"
                     | _ -> 
                         "-" + (config.get "versioning:branch" |> escapeBranchName) + "-" + config.get "versioning:build" + "-ci"
