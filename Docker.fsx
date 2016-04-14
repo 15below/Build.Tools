@@ -49,7 +49,7 @@ let private buildImage (config: Map<string, string>) name dir =
     tracefn "docker: tagging with latest: %s" dir
     let registry = (config.get "docker:registry")
     let latest = sprintf "%s/%s:latest" registry name
-    execProcess "docker" (sprintf "tag %s/%s:%s %s" registry name (config.get "versioning:build") latest) dir
+    execProcess "docker" (sprintf "tag -f %s/%s:%s %s" registry name (config.get "versioning:build") latest) dir
 
     //push
     if shouldPush then
