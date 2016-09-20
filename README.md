@@ -6,6 +6,11 @@ For example, assuming you submodule this repository into a directory called tool
 
     tools\Fake\FAKE.exe tools\Core.fsx "tools=tools" "solution=src\MySolution.sln"
     
+## Maintainers
+
+* @richard-green
+* @Yewridge
+
 ## What does it do?
 
 * Restores NuGet dependencies
