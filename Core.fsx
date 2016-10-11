@@ -17,6 +17,7 @@ let config =
         "build:configuration",          environVarOrDefault "configuration"         "Release"
         "build:solution",               environVar          "solution"
         "core:tools",                   environVar          "tools"
+        "utils:pullrequestbranchspec",  environVarOrDefault "pullrequestbranchspec" "pull/.*"
         "grunt:environment",            environVarOrDefault "gruntenvironment"      "dev"
         "grunt:verbose",                environVarOrDefault "gruntverbose"          "false"
         "packaging:output",             environVarOrDefault "output"                (sprintf "%s\output" (Path.GetFullPath(".")))

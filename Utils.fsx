@@ -3,6 +3,7 @@
 open Fake
 open System
 open System.IO
+open System.Text.RegularExpressions
 open Microsoft.FSharp.Collections
 
 let nunitRunners = @"./NUnit.Runners/tools"
@@ -49,3 +50,6 @@ let ensureSpecFlowRunner (config : Map<string, string>) =
 
      if result <> 0 then
          failwith "SpecFlow Runner directory not found, and NuGet install failed."
+
+let isPullRequest (config : Map<string, string>) =
+    Regex.IsMatch (config.get "versioning:branch", config.get "utils:pullrequestbranchspec")
