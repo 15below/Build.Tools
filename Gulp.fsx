@@ -16,7 +16,12 @@ let run (config : Map<string, string>) _ =
         | Some x -> x
         | _ -> "dev"
 
-    let args = "\"" + gulp + "\" --env=" + env
+    let build =
+        match config |> Map.tryFind "gulp:build" with
+        | Some x -> x
+        | _ -> "0.0.0"
+
+    let args = "\"" + gulp + "\" --env=" + env + "\" --build=" + build
 
     let result =
         ExecProcess (fun info ->
