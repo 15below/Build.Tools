@@ -8,8 +8,10 @@ For example, assuming you submodule this repository into a directory called tool
     
 ## Maintainers
 
-* @richard-green
-* @Yewridge
+* @richard-green (Richard Green)
+* @BlythMeister (Chris Blyth)
+* @Yewridge (Bruce Keen)
+* @zzdtri (Martyn Osborne)
 
 ## What does it do?
 
