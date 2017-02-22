@@ -21,7 +21,7 @@ let run (config : Map<string, string>) _ =
         | Some x -> x
         | _ -> "0.0.0"
 
-    let args = "\"" + gulp + "\" --env=" + env + "\" --build=" + build
+    let args = sprintf "\"%s\" --env=%s --build=%s" gulp env build
 
     let result =
         ExecProcess (fun info ->
