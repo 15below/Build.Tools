@@ -32,6 +32,7 @@ let config =
         "packaging:deploypushdir",      environVarOrDefault "deploypushdir"         ""
         "packaging:deploypushurl",      environVarOrDefault "deploypushurl"         ""
         "packaging:deployapikey",       environVarOrDefault "deployapikey"          ""
+        "packaging:deploynuspecsearch", environVarOrDefault "deploynuspecsearch"    ""
         "packaging:packages",           environVarOrDefault "packages"              ""
         "versioning:build",             environVarOrDefault "build_number"          "0"
         "versioning:branch",            match environVar "teamcity_build_branch" with

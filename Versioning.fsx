@@ -87,17 +87,22 @@ let update config _ =
             getBranchName "."
         with
         | _ -> "<default>"
+        
     !! "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
-    ++ "./**/AssemblyInfo.vb"
-        |> Seq.iter (updateAssemblyInfo config branchName)
+    |> Seq.iter (updateAssemblyInfo config branchName)
 
-let updateDeploy config _ =
+let updateDeploy (config : Map<string, string>) _ =
     let branchName =
         try
             getBranchName "."
         with
         | _ -> "<default>"
-    !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (updateDeployNuspec config branchName)
+        
+    let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
+                       | Some x when String.IsNullOrEmpty x = false -> x
+                       | _ -> "./**/Deploy/*.nuspec"
+    
+    !! nuspecSearch
+    |> Seq.iter (updateDeployNuspec config branchName)
