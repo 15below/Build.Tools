@@ -87,11 +87,11 @@ let update config _ =
             getBranchName "."
         with
         | _ -> "<default>"
+        
     !! "./**/AssemblyInfo.cs"
     ++ "./**/AssemblyInfo.vb"
     ++ "./**/AssemblyInfo.fs"
-    ++ "./**/AssemblyInfo.vb"
-        |> Seq.iter (updateAssemblyInfo config branchName)
+    |> Seq.iter (updateAssemblyInfo config branchName)
 
 let updateDeploy (config : Map<string, string>) _ =
     let branchName =
