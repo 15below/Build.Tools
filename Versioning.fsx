@@ -93,11 +93,16 @@ let update config _ =
     ++ "./**/AssemblyInfo.vb"
         |> Seq.iter (updateAssemblyInfo config branchName)
 
-let updateDeploy config _ =
+let updateDeploy (config : Map<string, string>) _ =
     let branchName =
         try
             getBranchName "."
         with
         | _ -> "<default>"
-    !! "./**/Deploy/*.nuspec"
-        |> Seq.iter (updateDeployNuspec config branchName)
+        
+    let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
+                       | Some x -> x
+                       | _ -> "./**/Deploy/*.nuspec"
+    
+    !! nuspecSearch
+    |> Seq.iter (updateDeployNuspec config branchName)

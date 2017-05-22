@@ -142,11 +142,15 @@ let CleanDirOnce dir =
 let package (config : Map<string, string>) _ =
     CleanDirOnce (config.get "packaging:deployoutput")
 
-    !! "./**/Deploy/*.nuspec"
-        |> Seq.map (packageDeployment config (config.get "packaging:deployoutput"))
-        |> Async.Parallel
-        |> Async.Ignore
-        |> Async.RunSynchronously
+    let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
+                       | Some x -> x
+                       | _ -> "./**/Deploy/*.nuspec"
+    
+    !! nuspecSearch
+    |> Seq.map (packageDeployment config (config.get "packaging:deployoutput"))
+    |> Async.Parallel
+    |> Async.Ignore
+    |> Async.RunSynchronously
 
 let push (config : Map<string, string>) _ =
     let pushto = config.TryFind "packaging:deploypushto"
