@@ -143,7 +143,7 @@ let package (config : Map<string, string>) _ =
     CleanDirOnce (config.get "packaging:deployoutput")
 
     let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
-                       | Some x -> x
+                       | Some x when String.IsNullOrEmpty x = false -> x
                        | _ -> "./**/Deploy/*.nuspec"
     
     !! nuspecSearch

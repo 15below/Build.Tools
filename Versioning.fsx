@@ -101,7 +101,7 @@ let updateDeploy (config : Map<string, string>) _ =
         | _ -> "<default>"
         
     let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
-                       | Some x -> x
+                       | Some x when String.IsNullOrEmpty x = false -> x
                        | _ -> "./**/Deploy/*.nuspec"
     
     !! nuspecSearch
