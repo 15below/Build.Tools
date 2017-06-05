@@ -1,5 +1,9 @@
 # Welcome to the Build.Tools project
 
+Convention driven .net builds scripts written in F#.
+
+##How To Use
+
 We pull this repository into other repositories for building using the paket GitHub dependencies (https://fsprojects.github.io/Paket/github-dependencies.html)
 
 By adding this dependency, you automatically (though paket magic) get FAKE.
