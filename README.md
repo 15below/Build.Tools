@@ -8,7 +8,7 @@ We pull this repository into other repositories for building using [Paket GitHub
 
 By adding this dependency, you automatically (though paket magic) get FAKE.
 
-You can then have a build script which does (assuming paket bootstrapper is in a .paket folder & your solution file is in the root of src)
+Assuming the paket bootstrapper is in a .paket folder & your solution file is in the root of _src_, you can then have a build script which contains:
 
 ```
 .paket\paket.bootstrapper.exe --run restore
