@@ -1,10 +1,17 @@
 # Welcome to the Build.Tools project
 
-Convention driven .net builds scripts written in F#. Sub-module this repository at the root of your code repository and set 2 environment (or command line) variables and you're good to go.
+We pull this repository into other repositories for building using the paket GitHub dependencies (https://fsprojects.github.io/Paket/github-dependencies.html)
 
-For example, assuming you submodule this repository into a directory called tools:
+By adding this dependency, you automatically (though paket magic) get FAKE.
 
-    tools\Fake\FAKE.exe tools\Core.fsx "tools=tools" "solution=src\MySolution.sln"
+You can then have a build script which does (assuming paket bootstrapper is in a .paket folder & your solution file is in the root of src)
+
+```
+.paket\paket.bootstrapper.exe --run restore
+packages\FAKE\tools\FAKE.exe paket-files\15below\Build.Tools\Core.fsx "solution=src\MySolution.sln"
+```
+
+You can customise any of the .fsx files and copy them into "paket-files\15below\Build.Tools" as part of your build script.
     
 ## Maintainers
 
