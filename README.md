@@ -16,13 +16,6 @@ packages\FAKE\tools\FAKE.exe paket-files\15below\Build.Tools\Core.fsx "solution=
 ```
 
 You can customise any of the .fsx files and copy them into "paket-files\15below\Build.Tools" as part of your build script.
-    
-## Maintainers
-
-* @richard-green (Richard Green)
-* @BlythMeister (Chris Blyth)
-* @Yewridge (Bruce Keen)
-* @zzdtri (Martyn Osborne)
 
 ## What does it do?
 
@@ -40,3 +33,10 @@ Optionally it can also:
 * Push nupkg files generated from a Deploy folder nuspec to a NuGet server
 
 Check the wiki for documentation.
+    
+## Maintainers
+
+* @richard-green (Richard Green)
+* @BlythMeister (Chris Blyth)
+* @Yewridge (Bruce Keen)
+* @zzdtri (Martyn Osborne)
