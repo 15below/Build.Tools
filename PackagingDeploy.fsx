@@ -13,7 +13,7 @@ open Utils
 
 let private nuget = @"NuGet/NuGet.exe"
 
-let private packageDeploymentpackageDeployment (config: Map<string, string>) outputDir proj =
+let private packageDeployment (config: Map<string, string>) outputDir proj =
     async {
         let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
                             | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
