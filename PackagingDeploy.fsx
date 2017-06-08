@@ -13,38 +13,7 @@ open Utils
 
 let private nuget = @"NuGet/NuGet.exe"
 
-let private filterPackageable proj =
-    Path.GetDirectoryName proj @@ Path.GetFileNameWithoutExtension proj + ".nuspec"
-        |> (fun spec -> FileInfo spec)
-        |> (fun file -> 
-            match file.Exists with
-                | true -> Some proj
-                | _ -> None)
-
-let private packageProject (config: Map<string, string>) outputDir proj =
-
-    let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
-                        | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
-                        | _ -> outputDir
-
-    Directory.CreateDirectory(outputDirFull) |> ignore
-
-    let args =
-        sprintf "pack \"%s\" -OutputDirectory \"%s\" -IncludeReferencedProjects -Properties Configuration=%s;VisualStudioVersion=%s" 
-            proj
-            outputDirFull
-            (config.get "build:configuration")
-            (config.get "vs:version")
-
-    let result =
-        ExecProcess (fun info ->
-            info.FileName <- config.get "core:tools" @@ nuget
-            info.WorkingDirectory <- DirectoryName proj
-            info.Arguments <- args) (TimeSpan.FromMinutes 5.)
-    
-    if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
-
-let private packageDeployment (config: Map<string, string>) outputDir proj =
+let private packageDeploymentpackageDeployment (config: Map<string, string>) outputDir proj =
     async {
         let outputDirFull = match config.TryFind "packaging:outputsubdirs" with
                             | Some "true" -> outputDir + "\\" + Path.GetFileNameWithoutExtension(proj)
@@ -69,30 +38,6 @@ let private packageDeployment (config: Map<string, string>) outputDir proj =
         
         return result
     }
-
-let private installPackageOptions (config: Map<string, string>) =
-    let packagePath = (config.get "packaging:packages")
-    if isNullOrEmpty packagePath then
-        ""
-    else
-       sprintf @"-OutputDirectory ""%s""" packagePath 
-
-let private updatePackages (config: Map<string, string>) file =
-    let specificId = config.get "packaging:updateid"
-    if 
-        isNullOrEmpty specificId ||
-        (isNotNullOrEmpty specificId && File.ReadAllText(file).Contains(specificId)) then
-            let args =
-                sprintf "update \"%s\"%s"
-                    file
-                    (if isNotNullOrEmpty specificId then sprintf " -Id \"%s\"" specificId else "")
-            let result =
-                ExecProcess (fun info ->
-                    info.FileName <- config.get "core:tools" @@ nuget
-                    info.WorkingDirectory <- DirectoryName file
-                    info.Arguments <- args) (TimeSpan.FromMinutes 5.)
-
-            if result <> 0 then failwithf "Error updating NuGet package %s" specificId
 
 let private getPackageName nupkg =
     // Regex turns D:\output\My.Package.1.0.0.0.nupkg into My.Package
