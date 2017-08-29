@@ -34,9 +34,10 @@ let private packageDeployment (config: Map<string, string>) outputDir proj =
                              CommandLine = args
                              Args = [] }
         
-        if result <> 0 then failwithf "Error packaging NuGet package. Project file: %s" proj
-        
-        return result
+        if result <> 0 then
+            return Some (sprintf "Error packaging NuGet package. Project file: %s" proj)
+        else        
+            return None
     }
 
 let private getPackageName nupkg =
@@ -90,12 +91,17 @@ let package (config : Map<string, string>) _ =
     let nuspecSearch = match config.TryFind "packaging:deploynuspecsearch" with
                        | Some x when String.IsNullOrEmpty x = false -> x
                        | _ -> "./**/Deploy/*.nuspec"
-    
-    !! nuspecSearch
-    |> Seq.map (packageDeployment config (config.get "packaging:deployoutput"))
-    |> Async.Parallel
-    |> Async.Ignore
-    |> Async.RunSynchronously
+
+    let failures = !! nuspecSearch
+                   |> Seq.map (packageDeployment config (config.get "packaging:deployoutput"))
+                   |> Async.Parallel
+                   |> Async.RunSynchronously
+                   |> Array.choose id
+
+    if failures |> Array.isEmpty |> not then
+        failures        
+        |> fun x -> String.Join("\n", x)
+        |> fun x -> failwith x
 
 let push (config : Map<string, string>) _ =
     let pushto = config.TryFind "packaging:deploypushto"
@@ -104,4 +110,3 @@ let push (config : Map<string, string>) _ =
     let apikey = config.get "packaging:deployapikey"
     !! (config.get "packaging:deployoutput" @@ "./**/*.nupkg")
         |> Seq.iter (pushPackages config pushto pushdir pushurl apikey)
-
