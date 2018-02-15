@@ -12,7 +12,7 @@
 open System.IO
 open Fake
 
-let config = 
+let config =
     Map.ofList [
         "build:configuration",          environVarOrDefault "configuration"         "Release"
         "build:solution",               environVar          "solution"
@@ -38,7 +38,7 @@ let config =
         "versioning:branch",            match environVar "teamcity_build_branch" with
                                             | "<default>" -> environVar "vcsroot_branch"
                                             | _ -> environVar "teamcity_build_branch"
-        "vs:version",                   environVarOrDefault "vs_version"            "11.0" 
+        "vs:version",                   environVarOrDefault "vs_version"            "11.0"
         ]
 
 // Target definitions
@@ -50,6 +50,7 @@ Target "Packaging:Push"                <| Packaging.push config
 // Target "Packaging:Constrain"           <| Packaging.constrain config
 // Target "Packaging:PushDeploy"          <| Packaging.pushDeploy config
 Target "Solution:Build"                <| Solution.build config
+Target "Solution:Restore"              <| Solution.restore config
 Target "Solution:Clean"                <| Solution.clean config
 Target "Versioning:Update"             <| Versioning.update config
 Target "Versioning:UpdateDeployNuspec" <| Versioning.updateDeploy config
