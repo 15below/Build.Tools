@@ -24,3 +24,6 @@ let build (config: Map<string, string>) _ =
 
 let clean (config: Map<string, string>) _ =
     runCompiler "Clean" config
+
+let restore (config: Map<string, string>) _ =
+    runCompiler "Restore" config
