@@ -21,12 +21,17 @@ let run (config : Map<string, string>) _ =
         | Some x -> x
         | _ -> "0.0.0"
 
+    let workingdir =
+        match config.TryFind "gulp:dir" with
+        | Some x when String.IsNullOrEmpty x = false -> x
+        | _ -> ".\\build"
+
     let args = sprintf "\"%s\" --env=%s --build=%s" gulp env build
 
     let result =
         ExecProcess (fun info ->
             info.FileName <- Npm.node
-            info.WorkingDirectory <- ".\\build"
+            info.WorkingDirectory <- workingdir
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
     if result <> 0 then failwith (sprintf "Gulp has exited with a non-zero error code: %d" result)
@@ -36,10 +41,15 @@ let run (config : Map<string, string>) _ =
 let target (config : Map<string, string>) name _ =
     let args = "\"" + gulp + "\" " + name
 
+    let workingdir =
+        match config.TryFind "gulp:dir" with
+        | Some x when String.IsNullOrEmpty x = false -> x
+        | _ -> ".\\build"
+
     let result =
         ExecProcess(fun info ->
             info.FileName <- Npm.node
-            info.WorkingDirectory <- ".\\build"
+            info.WorkingDirectory <- workingdir
             info.Arguments <- args) (TimeSpan.FromMinutes 15.)
 
     if result <> 0 then failwith (sprintf "Gulp has exited with a non-zero error code: %d" result)
