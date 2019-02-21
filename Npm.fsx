@@ -16,10 +16,15 @@ let install (config : Map<string, string>) _ =
 
     let args = "install"
 
+    let workingdir =
+        match config.TryFind "npm:dir" with
+        | Some x when String.IsNullOrEmpty x = false -> x
+        | _ -> ".\\build"
+
     let result =
         ExecProcess (fun info ->
             info.FileName <- npm
-            info.WorkingDirectory <- ".\\build"
+            info.WorkingDirectory <- workingdir
             info.Arguments <- args) (TimeSpan.FromMinutes 5.)
 
     ()
