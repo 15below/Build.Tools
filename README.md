@@ -36,7 +36,4 @@ Check the wiki for documentation.
     
 ## Maintainers
 
-* @richard-green (Richard Green)
-* @BlythMeister (Chris Blyth)
-* @Yewridge (Bruce Keen)
-* @zzdtri (Martyn Osborne)
+This repository is maintained by the [@15below/Build.Tools](https://github.com/orgs/15below/teams/build-tools) team
